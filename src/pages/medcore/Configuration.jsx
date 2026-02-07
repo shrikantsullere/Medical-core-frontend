@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import DashboardLayout from '../../components/medcore/DashboardLayout';
-import { User, Check, Plus, Camera, Lock, Search, RotateCcw, Info, Edit2, ArrowLeft, Save } from 'lucide-react';
+import { User, Check, Plus, Camera, Lock, Search, RotateCcw, Info, Edit2, ArrowLeft, Save, Download, X, Printer, List, ChevronLeft, ChevronRight, Trash2 } from 'lucide-react';
 
 const Configuration = () => {
   const [activeTab, setActiveTab] = useState('Perfil General');
@@ -183,6 +183,126 @@ const Configuration = () => {
   };
 
 
+  /* --- STATE FOR SERVICIOS --- */
+  const [servicesSearch, setServicesSearch] = useState('');
+  const [isServiceModalOpen, setIsServiceModalOpen] = useState(false);
+  const [services, setServices] = useState([]);
+  const [serviceFormData, setServiceFormData] = useState({
+    descripcion: '',
+    duracion: '',
+    tipoServicio: '',
+    porDefecto: false,
+    primeraConsulta: false,
+    tipoRango: '',
+    desde: '',
+    hasta: ''
+  });
+
+  const handleOpenServiceModal = () => {
+    setServiceFormData({
+      descripcion: '',
+      duracion: '',
+      tipoServicio: '',
+      porDefecto: false,
+      primeraConsulta: false,
+      tipoRango: '',
+      desde: '',
+      hasta: ''
+    });
+    setIsServiceModalOpen(true);
+  };
+
+  const handleCloseServiceModal = () => {
+    setIsServiceModalOpen(false);
+  };
+
+  const handleServiceFormChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setServiceFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
+  };
+
+  const handleSaveService = () => {
+    if (serviceFormData.descripcion.trim()) {
+      setServices([...services, { ...serviceFormData, id: Date.now() }]);
+      handleCloseServiceModal();
+      alert("Servicio Guardado!");
+    } else {
+      alert("Por favor ingrese una descripción.");
+    }
+  };
+
+
+
+
+
+  /* --- STATE FOR ESPECIALIDADES --- */
+  const [specialtiesSearch, setSpecialtiesSearch] = useState('');
+  const [specialties, setSpecialties] = useState([
+    { id: 52, code: 52, name: 'ACUPUNTURISTA' },
+    { id: 4, code: 4, name: 'ALERGISTA' },
+    { id: 5, code: 5, name: 'ANESTESIOLOGO' },
+    { id: 27, code: 27, name: 'ANGIOLOGO' },
+    { id: 6, code: 6, name: 'CARDIOLOGIA' },
+    { id: 66, code: 66, name: 'CIRUGIA' },
+    { id: 69, code: 69, name: 'CIRUGIA MAXILOFACIAL' },
+    { id: 7, code: 7, name: 'CIRUJANO CARDIOVASCULAR' },
+    { id: 8, code: 8, name: 'CIRUJANO GENERAL' },
+    { id: 9, code: 9, name: 'CIRUJANO MAXILO FACIAL' },
+  ]);
+  const [newSpecialtyName, setNewSpecialtyName] = useState('');
+  const [editingSpecialtyId, setEditingSpecialtyId] = useState(null);
+  const [editingSpecialtyName, setEditingSpecialtyName] = useState('');
+
+  // Pagination for Specialties
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  // Modal State for Specialties Services
+  const [isSpecialtyModalOpen, setIsSpecialtyModalOpen] = useState(false);
+  const [currentSpecialtyForModal, setCurrentSpecialtyForModal] = useState(null);
+  const [selectedServiceForSpecialty, setSelectedServiceForSpecialty] = useState('');
+
+  const handleAddSpecialty = () => {
+    if (newSpecialtyName.trim()) {
+      const newId = Math.max(...specialties.map(s => s.code), 0) + 1;
+      setSpecialties([{ id: newId, code: newId, name: newSpecialtyName.toUpperCase() }, ...specialties]);
+      setNewSpecialtyName('');
+    } else {
+      alert("Ingrese el nombre de la especialidad");
+    }
+  };
+
+  const handleDeleteSpecialty = (id) => {
+    if (window.confirm("¿Seguro que desea eliminar esta especialidad?")) {
+      setSpecialties(specialties.filter(s => s.id !== id));
+    }
+  };
+
+  const startEditingSpecialty = (specialty) => {
+    setEditingSpecialtyId(specialty.id);
+    setEditingSpecialtyName(specialty.name);
+  };
+
+  const saveEditingSpecialty = () => {
+    setSpecialties(specialties.map(s => s.id === editingSpecialtyId ? { ...s, name: editingSpecialtyName.toUpperCase() } : s));
+    setEditingSpecialtyId(null);
+    setEditingSpecialtyName('');
+  };
+
+  const handleOpenSpecialtyModal = (specialty) => {
+    setCurrentSpecialtyForModal(specialty);
+    setIsSpecialtyModalOpen(true);
+  };
+
+  const handleCloseSpecialtyModal = () => {
+    setIsSpecialtyModalOpen(false);
+    setCurrentSpecialtyForModal(null);
+  };
+
+
   return (
     <DashboardLayout>
       {/* Modal for Section Creation */}
@@ -248,6 +368,212 @@ const Configuration = () => {
                   style={{ backgroundColor: 'white', color: '#4B5563', border: 'none', padding: '0.5rem 1rem', borderRadius: '3px', fontWeight: 'bold', fontSize: '0.9rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
                 >
                   <span style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>✕</span> CERRAR
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal for Service Creation */}
+      {isServiceModalOpen && (
+        <div style={{
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+          backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1000,
+          display: 'flex', justifyContent: 'center', alignItems: 'flex-start', paddingTop: '50px'
+        }}>
+          <div style={{ backgroundColor: 'white', borderRadius: '4px', width: '700px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', overflow: 'hidden' }}>
+            <div style={{ backgroundColor: '#F97316', padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'white' }}>
+              <h3 style={{ margin: 0, fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <Plus size={18} /> Creación de servicio
+              </h3>
+              <button onClick={handleCloseServiceModal} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer' }}>
+                <X size={20} />
+              </button>
+            </div>
+            <div style={{ padding: '2rem' }}>
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', fontWeight: 'bold', fontSize: '0.85rem', color: '#374151', marginBottom: '0.3rem' }}>Descripción</label>
+                <input
+                  type="text"
+                  name="descripcion"
+                  value={serviceFormData.descripcion}
+                  onChange={handleServiceFormChange}
+                  style={{ width: '100%', padding: '0.5rem', border: '1px solid #D1D5DB', borderRadius: '3px' }}
+                />
+              </div>
+
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', fontWeight: 'bold', fontSize: '0.85rem', color: '#374151', marginBottom: '0.3rem' }}>Duración</label>
+                <select
+                  name="duracion"
+                  value={serviceFormData.duracion}
+                  onChange={handleServiceFormChange}
+                  style={{ width: '100%', padding: '0.5rem', border: '1px solid #D1D5DB', borderRadius: '3px' }}
+                >
+                  <option value="">Seleccionar...</option>
+                  <option value="15 min">15 min</option>
+                  <option value="30 min">30 min</option>
+                  <option value="45 min">45 min</option>
+                  <option value="60 min">60 min</option>
+                </select>
+              </div>
+
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', fontWeight: 'bold', fontSize: '0.85rem', color: '#374151', marginBottom: '0.3rem' }}>Tipo de servicio</label>
+                <select
+                  name="tipoServicio"
+                  value={serviceFormData.tipoServicio}
+                  onChange={handleServiceFormChange}
+                  style={{ width: '100%', padding: '0.5rem', border: '1px solid #D1D5DB', borderRadius: '3px' }}
+                >
+                  <option value="">Seleccionar...</option>
+                  <option value="Consulta">Consulta</option>
+                  <option value="Procedimiento">Procedimiento</option>
+                </select>
+              </div>
+
+              <div style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <input
+                  type="checkbox"
+                  name="porDefecto"
+                  checked={serviceFormData.porDefecto}
+                  onChange={handleServiceFormChange}
+                  style={{ width: '18px', height: '18px' }}
+                />
+                <label style={{ fontSize: '0.9rem', color: '#374151' }}>Por defecto</label>
+              </div>
+
+              <div style={{ marginBottom: '1rem' }}>
+                <h4 style={{ fontSize: '0.9rem', fontWeight: 'bold', color: '#374151', margin: '0 0 0.5rem 0' }}>Condición de asignación en agenda</h4>
+              </div>
+
+              <div style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <input
+                  type="checkbox"
+                  name="primeraConsulta"
+                  checked={serviceFormData.primeraConsulta}
+                  onChange={handleServiceFormChange}
+                  style={{ width: '18px', height: '18px' }}
+                />
+                <label style={{ fontSize: '0.9rem', color: '#374151' }}>Primera Consulta</label>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '1rem', marginBottom: '2rem', alignItems: 'end' }}>
+                <div>
+                  <label style={{ display: 'block', fontWeight: 'bold', fontSize: '0.85rem', color: '#374151', marginBottom: '0.3rem' }}>Tipo de rango</label>
+                  <select
+                    name="tipoRango"
+                    value={serviceFormData.tipoRango}
+                    onChange={handleServiceFormChange}
+                    style={{ width: '100%', padding: '0.5rem', border: '1px solid #D1D5DB', borderRadius: '3px' }}
+                  >
+                    <option value="">Seleccionar...</option>
+                    <option value="Edad">Edad</option>
+                  </select>
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontWeight: 'bold', fontSize: '0.85rem', color: '#374151', marginBottom: '0.3rem' }}>Desde</label>
+                  <input
+                    type="text"
+                    name="desde"
+                    value={serviceFormData.desde}
+                    onChange={handleServiceFormChange}
+                    style={{ width: '100%', padding: '0.5rem', border: '1px solid #D1D5DB', borderRadius: '3px', backgroundColor: '#F3F4F6' }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontWeight: 'bold', fontSize: '0.85rem', color: '#374151', marginBottom: '0.3rem' }}>Hasta</label>
+                  <input
+                    type="text"
+                    name="hasta"
+                    value={serviceFormData.hasta}
+                    onChange={handleServiceFormChange}
+                    style={{ width: '100%', padding: '0.5rem', border: '1px solid #D1D5DB', borderRadius: '3px', backgroundColor: '#F3F4F6' }}
+                  />
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
+                <button
+                  onClick={handleSaveService}
+                  style={{ backgroundColor: '#F97316', color: 'white', border: 'none', padding: '0.5rem 1.5rem', borderRadius: '3px', fontWeight: 'bold', fontSize: '0.9rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                >
+                  <Check size={16} /> GUARDAR
+                </button>
+                <button
+                  onClick={handleCloseServiceModal}
+                  style={{ background: 'none', color: '#4B5563', border: 'none', padding: '0.5rem 1rem', borderRadius: '3px', fontWeight: 'bold', fontSize: '0.9rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                >
+                  <X size={16} /> CERRAR
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+
+
+      {/* Modal for Specialty Services */}
+      {isSpecialtyModalOpen && currentSpecialtyForModal && (
+        <div style={{
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+          backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1000,
+          display: 'flex', justifyContent: 'center', alignItems: 'center'
+        }}>
+          <div style={{ backgroundColor: 'white', borderRadius: '4px', width: '600px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', overflow: 'hidden' }}>
+            <div style={{ backgroundColor: '#F97316', padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'white' }}>
+              <h3 style={{ margin: 0, fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <User size={18} /> Servicios
+              </h3>
+              <button onClick={handleCloseSpecialtyModal} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer' }}>
+                <X size={20} />
+              </button>
+            </div>
+            <div style={{ padding: '2rem' }}>
+              <div style={{ marginBottom: '1.5rem' }}>
+                <label style={{ display: 'block', fontWeight: 'bold', fontSize: '0.85rem', color: '#333', marginBottom: '0.3rem' }}>Especialidad:</label>
+                <div style={{ padding: '0.5rem', backgroundColor: '#F3F4F6', border: '1px solid #E5E7EB', borderRadius: '3px', color: '#374151' }}>
+                  {currentSpecialtyForModal.name}
+                </div>
+              </div>
+
+              <div style={{ marginBottom: '1.5rem' }}>
+                <label style={{ display: 'block', fontWeight: 'bold', fontSize: '0.85rem', color: '#333', marginBottom: '0.3rem' }}>Servicios:</label>
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                  <select
+                    value={selectedServiceForSpecialty}
+                    onChange={(e) => setSelectedServiceForSpecialty(e.target.value)}
+                    style={{ flex: 1, padding: '0.5rem', border: '1px solid #D1D5DB', borderRadius: '3px' }}
+                  >
+                    <option value="">Seleccionar...</option>
+                    <option value="Consulta General">Consulta General</option>
+                    <option value="Cirugía Menor">Cirugía Menor</option>
+                  </select>
+                  <button style={{ color: '#F97316', background: 'none', border: 'none', cursor: 'pointer' }}>
+                    <Check size={20} />
+                  </button>
+                </div>
+              </div>
+
+              <div style={{ marginBottom: '2rem' }}>
+                <label style={{ display: 'block', fontWeight: 'bold', fontSize: '0.85rem', color: '#333', marginBottom: '0.3rem' }}>Servicios de la especialidad:</label>
+                {/* List of services can go here */}
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', borderTop: '1px solid #eee', paddingTop: '1rem' }}>
+                <button
+                  onClick={handleCloseSpecialtyModal}
+                  style={{ color: '#666', background: 'none', border: 'none', padding: '0.5rem 1rem', fontWeight: 'bold', fontSize: '0.9rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                >
+                  <X size={16} color="#F97316" /> CANCELAR
+                </button>
+                <button
+                  onClick={() => { alert("Servicios guardados"); handleCloseSpecialtyModal(); }}
+                  style={{ backgroundColor: '#F97316', color: 'white', border: 'none', padding: '0.5rem 1.5rem', borderRadius: '3px', fontWeight: 'bold', fontSize: '0.9rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                >
+                  <Check size={16} /> GUARDAR
                 </button>
               </div>
             </div>
@@ -1078,8 +1404,215 @@ const Configuration = () => {
             </div>
           )}
 
+          {/* --- SERVICIOS VIEW --- */}
+          {activeTab === 'Servicios' && (
+            <div style={{ backgroundColor: '#F9FAFB', minHeight: '500px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', borderBottom: '1px solid #F28C28', paddingBottom: '0.5rem' }}>
+                <h2 style={{ fontSize: '1.4rem', color: '#333', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <span style={{ fontSize: '1.6rem' }}>≡</span> Servicios Listado de Servicios
+                </h2>
+                <button
+                  onClick={handleOpenServiceModal}
+                  style={{
+                    backgroundColor: '#F97316',
+                    color: 'white',
+                    border: 'none',
+                    padding: '0.5rem 1rem',
+                    borderRadius: '2px',
+                    fontWeight: 'bold',
+                    fontSize: '0.8rem',
+                    cursor: 'pointer',
+                    textTransform: 'uppercase',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem'
+                  }}
+                >
+                  <Plus size={16} /> NUEVO SERVICIO
+                </button>
+              </div>
+
+              <div style={{ backgroundColor: 'white', padding: '1rem', borderRadius: '4px', boxShadow: '0 1px 2px rgba(0,0,0,0.05)', display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2rem' }}>
+                <div style={{ position: 'relative', flex: 1, maxWidth: '500px' }}>
+                  <label style={{
+                    position: 'absolute',
+                    top: '-12px',
+                    left: '0',
+                    backgroundColor: '#F97316',
+                    color: 'white',
+                    fontSize: '0.65rem',
+                    padding: '2px 6px',
+                    fontWeight: 'bold',
+                    borderRadius: '2px'
+                  }}>BUSCAR:</label>
+                  <input
+                    type="text"
+                    placeholder="Buscar"
+                    value={servicesSearch}
+                    onChange={(e) => setServicesSearch(e.target.value)}
+                    style={{ width: '100%', padding: '0.6rem', border: '1px solid #ddd', borderRadius: '2px', fontSize: '0.9rem', outline: 'none' }}
+                  />
+                </div>
+                <Search size={18} color="#F97316" style={{ cursor: 'pointer' }} />
+                <Download size={18} color="#F97316" style={{ cursor: 'pointer' }} />
+              </div>
+
+              {services.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '4rem', color: '#333', fontSize: '0.9rem' }}>
+                  No existe información para mostrar
+                </div>
+              ) : (
+                <div style={{ backgroundColor: 'white', borderRadius: '4px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', overflow: 'hidden' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 100px', backgroundColor: '#374151', color: 'white', padding: '0.8rem 1rem', fontSize: '0.85rem', fontWeight: 'bold' }}>
+                    <div>Descripción</div>
+                    <div>Duración</div>
+                    <div>Tipo</div>
+                    <div></div>
+                  </div>
+                  {services.map(service => (
+                    <div key={service.id} style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 100px', padding: '0.8rem 1rem', borderBottom: '1px solid #eee', alignItems: 'center', fontSize: '0.85rem', color: '#374151' }}>
+                      <div>{service.descripcion}</div>
+                      <div>{service.duracion}</div>
+                      <div>{service.tipoServicio}</div>
+                      <div style={{ textAlign: 'center' }}>
+                        <button style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#666' }}>
+                          <Edit2 size={16} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* --- ESPECIALIDADES VIEW --- */}
+          {activeTab === 'Especialidades' && (
+            <div style={{ backgroundColor: '#F9FAFB', minHeight: '500px' }}>
+              <div style={{ marginBottom: '1rem', borderBottom: '1px solid #F28C28', paddingBottom: '0.5rem' }}>
+                <h2 style={{ fontSize: '1.4rem', color: '#333', margin: 0 }}>Especialidades</h2>
+                <span style={{ fontSize: '0.8rem', color: '#555', fontWeight: '500', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                  <List size={12} /> Listado de Especialidades
+                </span>
+              </div>
+
+              <div style={{ backgroundColor: 'white', padding: '1rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 1px 2px rgba(0,0,0,0.05)', marginBottom: '0' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1 }}>
+                  <label style={{ fontSize: '0.9rem', color: '#555' }}>Buscar:</label>
+                  <input
+                    type="text"
+                    className="custom-input"
+                    value={specialtiesSearch}
+                    onChange={(e) => setSpecialtiesSearch(e.target.value)}
+                    style={{ maxWidth: '400px', width: '100%' }}
+                  />
+                  <button style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
+                    <Search size={18} color="#F97316" />
+                  </button>
+                </div>
+                <button
+                  style={{ color: '#F97316', background: 'none', border: 'none', fontWeight: 'bold', fontSize: '0.9rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.2rem' }}
+                >
+                  <Plus size={16} /> NUEVO
+                </button>
+              </div>
+
+              <div style={{ backgroundColor: 'white', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+                {/* Table Header */}
+                <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr 120px', backgroundColor: '#0B3B3C', color: 'white', padding: '0.5rem 1rem', fontSize: '0.8rem', fontWeight: 'bold' }}>
+                  <div>Codigo</div>
+                  <div>Descripción</div>
+                  <div></div>
+                </div>
+
+                {/* Inline Add Row */}
+                <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr 120px', padding: '0.5rem 1rem', borderBottom: '1px solid #eee', backgroundColor: '#fafafa', alignItems: 'center' }}>
+                  <div></div>
+                  <div>
+                    <input
+                      type="text"
+                      value={newSpecialtyName}
+                      onChange={(e) => setNewSpecialtyName(e.target.value)}
+                      style={{ width: '100%', padding: '0.4rem', border: '1px solid #ddd', borderRadius: '2px' }}
+                    />
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' }}>
+                    <button onClick={handleAddSpecialty} style={{ backgroundColor: '#EF4444', color: 'white', border: 'none', padding: '0.3rem', borderRadius: '2px', cursor: 'pointer' }}>
+                      <X size={14} />
+                    </button>
+                    <button style={{ backgroundColor: '#F97316', color: 'white', border: 'none', padding: '0.3rem', borderRadius: '2px', cursor: 'pointer' }}>
+                      <Save size={14} />
+                    </button>
+                  </div>
+                </div>
+
+                {/* List of Specialties */}
+                {specialties
+                  .filter(s => s.name.toLowerCase().includes(specialtiesSearch.toLowerCase()))
+                  .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+                  .map(specialty => (
+                    <div key={specialty.id} style={{ display: 'grid', gridTemplateColumns: '80px 1fr 120px', padding: '0.6rem 1rem', borderBottom: '1px solid #eee', alignItems: 'center', fontSize: '0.85rem' }}>
+                      <div style={{ color: '#333' }}>{specialty.code}</div>
+                      <div>
+                        {editingSpecialtyId === specialty.id ? (
+                          <div style={{ display: 'flex', gap: '0.5rem' }}>
+                            <input
+                              type="text"
+                              value={editingSpecialtyName}
+                              onChange={(e) => setEditingSpecialtyName(e.target.value)}
+                              style={{ flex: 1, padding: '0.3rem', border: '1px solid #F97316', borderRadius: '2px' }}
+                            />
+                            <button onClick={saveEditingSpecialty} style={{ border: 'none', background: 'none', color: '#22C55E', cursor: 'pointer' }}><Check size={16} /></button>
+                            <button onClick={() => setEditingSpecialtyId(null)} style={{ border: 'none', background: 'none', color: '#EF4444', cursor: 'pointer' }}><X size={16} /></button>
+                          </div>
+                        ) : (
+                          <div style={{ border: '1px solid #e5e7eb', padding: '0.4rem', borderRadius: '2px', color: '#555' }}>
+                            {specialty.name}
+                          </div>
+                        )}
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.8rem' }}>
+                        <button onClick={() => handleOpenSpecialtyModal(specialty)} style={{ border: 'none', background: 'none', color: '#F97316', cursor: 'pointer' }} title="Servicios">
+                          <List size={16} />
+                        </button>
+                        <button onClick={() => startEditingSpecialty(specialty)} style={{ border: 'none', background: 'none', color: '#F97316', cursor: 'pointer' }} title="Editar">
+                          <Edit2 size={16} />
+                        </button>
+                        <button onClick={() => handleDeleteSpecialty(specialty.id)} style={{ border: 'none', background: 'none', color: '#F97316', cursor: 'pointer' }} title="Eliminar">
+                          <X size={16} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+
+              {/* Pagination footer */}
+              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '1rem', backgroundColor: '#f9fafb' }}>
+                <div style={{ display: 'flex', alignItems: 'center', backgroundColor: 'white', padding: '0.2rem 0.5rem', borderRadius: '4px', boxShadow: '0 1px 2px rgba(0,0,0,0.1)' }}>
+                  <button
+                    onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                    disabled={currentPage === 1}
+                    style={{ border: 'none', background: 'none', cursor: currentPage === 1 ? 'not-allowed' : 'pointer', color: '#F97316', padding: '0.2rem' }}
+                  >
+                    <ChevronLeft size={16} />
+                  </button>
+                  <span style={{ margin: '0 0.5rem', fontSize: '0.85rem', color: '#555', fontWeight: 'bold' }}>
+                    {currentPage}/{Math.ceil(specialties.length / itemsPerPage)}
+                  </span>
+                  <button
+                    onClick={() => setCurrentPage(Math.min(Math.ceil(specialties.length / itemsPerPage), currentPage + 1))}
+                    disabled={currentPage === Math.ceil(specialties.length / itemsPerPage)}
+                    style={{ border: 'none', background: 'none', cursor: currentPage === Math.ceil(specialties.length / itemsPerPage) ? 'not-allowed' : 'pointer', color: '#F97316', padding: '0.2rem' }}
+                  >
+                    <ChevronRight size={16} />
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* --- PLACEHOLDER FOR OTHER TABS --- */}
-          {!['Perfil General', 'Programas', 'Posiciones de trabajo', 'Estados de cita', 'Plan de Indicadores', 'Dashboard Pacientes', 'Permisos Dashboard Pacientes', 'Flujo de Operación'].includes(activeTab) && (
+          {!['Perfil General', 'Programas', 'Posiciones de trabajo', 'Estados de cita', 'Plan de Indicadores', 'Dashboard Pacientes', 'Permisos Dashboard Pacientes', 'Flujo de Operación', 'Servicios', 'Especialidades'].includes(activeTab) && (
             <div style={{ padding: '4rem', textAlign: 'center', color: '#9CA3AF' }}>
               Section "{activeTab}" under construction
             </div>

@@ -1,0 +1,387 @@
+:root {
+  --med-orange: #F28C28;
+  --med-teal: #0B3B3C;
+  --med-bg: #F5F6F7;
+  --med-border: #E5E7EB;
+  --med-dark: #1F2937;
+  --sidebar-width: 260px;
+}
+
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--med-bg);
+}
+
+/* Sidebar Styling */
+.sidebar {
+  width: var(--sidebar-width);
+  background-color: var(--med-teal);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+
+.sidebar-logo {
+  background-color: var(--med-orange);
+  height: 64px;
+  display: flex;
+  align-items: center;
+  padding-left: 1.5rem;
+}
+
+.sidebar-logo h1 {
+  color: white;
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.sidebar-profile {
+  padding: 2rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.profile-img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #EBB39C;
+  /* Flesh tone for placeholder like in image */
+  margin-bottom: 1rem;
+}
+
+.profile-info h3 {
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin: 0;
+  color: #CBD5E1;
+}
+
+.sidebar-menu {
+  flex-grow: 1;
+  padding-top: 1rem;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  color: #CBD5E1;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  transition: all 0.2s;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.menu-item:hover,
+.menu-item.active {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.menu-item.active {
+  border-left: 4px solid var(--med-orange);
+}
+
+.sidebar-footer {
+  padding: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin-top: auto;
+  /* Push to bottom */
+}
+
+.logout-btn {
+  width: 100%;
+  background-color: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #CBD5E1;
+  padding: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.logout-btn:hover {
+  background-color: var(--med-orange);
+  color: white;
+  border-color: var(--med-orange);
+}
+
+/* Main Content Styling */
+.main-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.top-header {
+  height: 64px;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  border-bottom: 1px solid var(--med-border);
+  position: relative;
+}
+
+/* Red strip at the top of main area as seen in img */
+.top-header::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(to right, #F28C28, #EBB39C);
+}
+
+.hamburger {
+  color: var(--med-orange);
+  cursor: pointer;
+}
+
+.workspace {
+  padding: 2rem;
+  flex-grow: 1;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: var(--med-dark);
+  margin: 0;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.btn-validate {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--med-orange);
+  font-weight: 600;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+}
+
+.btn-continue {
+  background-color: #F8A359;
+  /* Lighter orange for continue button */
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 4px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+/* Step Progress Bar with Chevrons */
+.step-bar {
+  display: flex;
+  width: 100%;
+  background-color: #EDF0F2;
+  margin-bottom: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.step {
+  flex: 1;
+  text-align: center;
+  padding: 0.8rem 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #64748B;
+  position: relative;
+  clip-path: polygon(calc(100% - 15px) 0%, 100% 50%, calc(100% - 15px) 100%, 0% 100%, 15px 50%, 0% 0%);
+  margin-right: -10px;
+}
+
+.step:first-child {
+  clip-path: polygon(calc(100% - 15px) 0%, 100% 50%, calc(100% - 15px) 100%, 0% 100%, 0% 50%, 0% 0%);
+  padding-left: 15px;
+}
+
+.step.active {
+  background-color: var(--med-orange);
+  color: white;
+}
+
+/* Form Styles */
+.form-section {
+  display: flex;
+  gap: 3rem;
+  margin-top: 1rem;
+}
+
+.form-group {
+  flex: 1;
+  max-width: 400px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--med-dark);
+  margin-bottom: 0.8rem;
+}
+
+.custom-select {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid var(--med-border);
+  background-color: white;
+  color: #64748B;
+  font-size: 0.9rem;
+  border-radius: 2px;
+}
+
+.custom-input {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid var(--med-border);
+  background-color: white;
+  color: #64748B;
+  font-size: 0.9rem;
+  border-radius: 2px;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    left: -var(--sidebar-width);
+    z-index: 100;
+    height: 100vh;
+  }
+
+  .sidebar.open {
+    left: 0;
+  }
+
+  .form-section {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+}
+
+/* Search Component Styling */
+.search-container {
+  max-width: 600px;
+  margin-bottom: 2rem;
+}
+
+.search-label {
+  background-color: #F28C28;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  text-transform: uppercase;
+  display: inline-block;
+  border-radius: 2px 2px 0 0;
+}
+
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid #E5E7EB;
+  font-size: 0.9rem;
+  color: #6B7280;
+  outline: none;
+  border-radius: 0 2px 2px 2px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+  /* Slight inset shadow */
+}
+
+.search-input:focus {
+  border-color: #F28C28;
+}
+
+.search-icons {
+  margin-left: 1rem;
+  display: flex;
+  gap: 0.8rem;
+}
+
+.search-icon-btn {
+  color: #F28C28;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.empty-state {
+  text-align: center;
+  color: #4B5563;
+  margin-top: 3rem;
+  font-size: 1rem;
+}
+
+.page-header.bordered {
+  border-bottom: 1px solid #E6E6E6;
+  /* Light separator */
+  padding-bottom: 0.5rem;
+  margin-bottom: 2rem;
+  align-items: flex-end;
+  /* Align title and button box to bottom */
+}
+
+/* Specific override for the New Doctor button as shown in img */
+.btn-new-doctor {
+  background-color: #F28C28;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 2px;
+  font-weight: 600;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  text-transform: uppercase;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}

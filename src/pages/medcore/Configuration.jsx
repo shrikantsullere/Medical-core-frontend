@@ -12,7 +12,7 @@ const Configuration = () => {
     'Perfil General', 'Programas', 'Posiciones de trabajo', 'Estados de cita',
     'Plan de Indicadores', 'Dashboard Pacientes', 'Permisos Dashboard Pacientes',
     'Flujo de Operación', 'Orden de Categorias', 'Servicios', 'Especialidades',
-    'Correos', 'Servicios Quirúrgicos', 'Indicaciones'
+    'Correos', 'Servicios Quirúrgicos', 'Indicaciones', 'Sucursales'
   ];
 
   // Form State for Perfil General
@@ -303,6 +303,177 @@ const Configuration = () => {
   };
 
 
+  /* --- STATE FOR CORREOS --- */
+  const [emailViewMode, setEmailViewMode] = useState('list'); // 'list', 'create'
+  const [emails, setEmails] = useState([]); // Array of email objects
+  const [emailFormData, setEmailFormData] = useState({
+    tipo: '',
+    asunto: '',
+    cuerpo: ''
+  });
+
+  const handleAddEmail = () => {
+    setEmailFormData({ tipo: '', asunto: '', cuerpo: '' });
+    setEmailViewMode('create');
+  };
+
+  const handleSaveEmail = () => {
+    if (emailFormData.asunto && emailFormData.tipo) {
+      setEmails([...emails, { ...emailFormData, id: Date.now() }]);
+      setEmailViewMode('list');
+      alert("Correo Guardado!");
+    } else {
+      alert("Complete los campos requeridos");
+    }
+  };
+
+  const handleEmailFormChange = (e) => {
+    const { name, value } = e.target;
+    setEmailFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  /* --- STATE FOR SERVICIOS QUIRURGICOS --- */
+  const [surgicalSearch, setSurgicalSearch] = useState('');
+  const [surgicalServices, setSurgicalServices] = useState([]);
+  const [isSurgicalModalOpen, setIsSurgicalModalOpen] = useState(false);
+  const [surgicalFormData, setSurgicalFormData] = useState({
+    codigo: '',
+    descripcion: ''
+  });
+  const [surgicalPage, setSurgicalPage] = useState(1);
+
+  const handleOpenSurgicalModal = () => {
+    setSurgicalFormData({ codigo: '', descripcion: '' });
+    setIsSurgicalModalOpen(true);
+  };
+
+  const handleCloseSurgicalModal = () => {
+    setIsSurgicalModalOpen(false);
+  };
+
+  const handleSaveSurgical = () => {
+    if (surgicalFormData.descripcion) {
+      setSurgicalServices([...surgicalServices, { ...surgicalFormData, id: Date.now() }]);
+      handleCloseSurgicalModal();
+      alert("Procedimiento Guardado!");
+    } else {
+      alert("Ingrese una descripción");
+    }
+  };
+
+  const handleSurgicalFormChange = (e) => {
+    const { name, value } = e.target;
+    setSurgicalFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  /* --- STATE FOR INDICACIONES --- */
+  const [indicationsSubTab, setIndicationsSubTab] = useState('Maintenance'); // 'Maintenance', 'Category', 'Template'
+
+  // Maintenance Sub-tab State
+  const [indicationsSearch, setIndicationsSearch] = useState('');
+  const [indications, setIndications] = useState([
+    { id: 1, description: 'Tomography', type: 'STUDIES', resultType: '' },
+    { id: 2, description: 'SONOGRAPHY', type: 'STUDIES', resultType: '' },
+    { id: 3, description: 'Coprological', type: 'LABORATORY', resultType: '' },
+    { id: 4, description: 'PCR', type: 'LABORATORY', resultType: '' },
+  ]);
+  const [isIndicationModalOpen, setIsIndicationModalOpen] = useState(false);
+  const [indicationFormData, setIndicationFormData] = useState({
+    description: '',
+    type: '',
+    resultType: '',
+    resultTitle: ''
+  });
+
+  // Category Sub-tab State
+  const [categorySearch, setCategorySearch] = useState('');
+  const [categories, setCategories] = useState([]);
+  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false); // Reuse simple modal logic or new one
+  const [categoryName, setCategoryName] = useState('');
+
+  // Template Sub-tab State
+  const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
+  const [templateFormData, setTemplateFormData] = useState({
+    category: '',
+    type: ''
+  });
+
+  /* Handlers for Indications */
+  const handleOpenIndicationModal = () => {
+    setIndicationFormData({ description: '', type: '', resultType: '', resultTitle: '' });
+    setIsIndicationModalOpen(true);
+  };
+
+  const handleSaveIndication = () => {
+    if (indicationFormData.description) {
+      setIndications([...indications, { ...indicationFormData, id: Date.now() }]);
+      setIsIndicationModalOpen(false);
+      alert("Indicación Guardada!");
+    } else {
+      alert("Ingrese una descripción");
+    }
+  };
+
+  const handleIndicationFormChange = (e) => {
+    const { name, value } = e.target;
+    setIndicationFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  /* Handlers for Category */
+  const handleSaveCategory = () => {
+    if (categoryName) {
+      setCategories([...categories, { id: Date.now(), description: categoryName }]);
+      setCategoryName('');
+      // Logic to close modal if separate modal used
+      alert("Categoría Guardada!");
+    }
+  };
+
+  /* Handlers for Template */
+  const handleOpenTemplateModal = () => {
+    setTemplateFormData({ category: '', type: '' });
+    setIsTemplateModalOpen(true);
+  };
+
+  const handleSaveTemplate = () => {
+    setIsTemplateModalOpen(false);
+    alert("Template Section Created!");
+  };
+
+  /* --- STATE FOR SUCURSALES (BRANCHES) --- */
+  const [branchSearch, setBranchSearch] = useState('');
+  const [branches, setBranches] = useState([]);
+  const [isBranchModalOpen, setIsBranchModalOpen] = useState(false);
+  const [branchFormData, setBranchFormData] = useState({
+    name: '',
+    address: '',
+    principal: false,
+    status: true // true = Active, false = Inactive
+  });
+
+  const handleOpenBranchModal = () => {
+    setBranchFormData({ name: '', address: '', principal: false, status: true });
+    setIsBranchModalOpen(true);
+  };
+
+  const handleSaveBranch = () => {
+    if (branchFormData.name) {
+      setBranches([...branches, { ...branchFormData, id: Date.now() }]);
+      setIsBranchModalOpen(false);
+      alert("Sucursal Guardada!");
+    } else {
+      alert("Ingrese el nombre de la sucursal");
+    }
+  };
+
+  const handleBranchFormChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setBranchFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
+  };
+
   return (
     <DashboardLayout>
       {/* Modal for Section Creation */}
@@ -571,6 +742,308 @@ const Configuration = () => {
                 </button>
                 <button
                   onClick={() => { alert("Servicios guardados"); handleCloseSpecialtyModal(); }}
+                  style={{ backgroundColor: '#F97316', color: 'white', border: 'none', padding: '0.5rem 1.5rem', borderRadius: '3px', fontWeight: 'bold', fontSize: '0.9rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                >
+                  <Check size={16} /> GUARDAR
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal for Indications (Maintenance) */}
+      {isIndicationModalOpen && (
+        <div style={{
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+          backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1000,
+          display: 'flex', justifyContent: 'center', alignItems: 'flex-start', paddingTop: '100px'
+        }}>
+          <div style={{ backgroundColor: 'white', borderRadius: '4px', width: '600px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', overflow: 'hidden' }}>
+            <div style={{ backgroundColor: '#F97316', padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'white' }}>
+              <h3 style={{ margin: 0, fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <Plus size={18} /> Create/Modify Procedure
+              </h3>
+              <button onClick={() => setIsIndicationModalOpen(false)} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer' }}>
+                <X size={20} />
+              </button>
+            </div>
+            <div style={{ padding: '2rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '1.5rem' }}>
+                <div>
+                  <label style={{ display: 'block', fontWeight: 'bold', fontSize: '0.85rem', color: '#374151', marginBottom: '0.3rem' }}>Description:</label>
+                  <input
+                    type="text"
+                    name="description"
+                    value={indicationFormData.description}
+                    onChange={handleIndicationFormChange}
+                    placeholder="Description"
+                    className="custom-input"
+                    style={{ width: '100%', padding: '0.5rem', border: '1px solid #D9534F', borderRadius: '3px' }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontWeight: 'bold', fontSize: '0.85rem', color: '#D9534F', marginBottom: '0.3rem' }}>Type:</label>
+                  <select
+                    name="type"
+                    value={indicationFormData.type}
+                    onChange={handleIndicationFormChange}
+                    className="custom-select"
+                    style={{ width: '100%', padding: '0.5rem', border: '1px solid #D9534F', borderRadius: '3px' }}
+                  >
+                    <option value="">Select...</option>
+                    <option value="STUDIES">STUDIES</option>
+                    <option value="LABORATORY">LABORATORY</option>
+                    <option value="OTHERS">OTHERS</option>
+                  </select>
+                </div>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '2rem' }}>
+                <div>
+                  <label style={{ display: 'block', fontWeight: 'bold', fontSize: '0.85rem', color: '#D9534F', marginBottom: '0.3rem' }}>Result Type:</label>
+                  <select
+                    name="resultType"
+                    value={indicationFormData.resultType}
+                    onChange={handleIndicationFormChange}
+                    className="custom-select"
+                    style={{ width: '100%', padding: '0.5rem', border: '1px solid #D9534F', borderRadius: '3px' }}
+                  >
+                    <option value="">Select...</option>
+                    <option value="Text">Text</option>
+                    <option value="Number">Number</option>
+                  </select>
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontWeight: 'bold', fontSize: '0.85rem', color: '#374151', marginBottom: '0.3rem' }}>Result title:</label>
+                  <input
+                    type="text"
+                    name="resultTitle"
+                    value={indicationFormData.resultTitle}
+                    onChange={handleIndicationFormChange}
+                    className="custom-input"
+                    style={{ width: '100%', padding: '0.5rem', border: '1px solid #D1D5DB', borderRadius: '3px' }}
+                  />
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
+                <button
+                  onClick={() => setIsIndicationModalOpen(false)}
+                  style={{ background: 'none', color: '#666', border: 'none', padding: '0.5rem 1rem', borderRadius: '3px', fontWeight: 'bold', fontSize: '0.9rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                >
+                  CANCEL
+                </button>
+                <button
+                  onClick={handleSaveIndication}
+                  style={{ backgroundColor: '#F97316', color: 'white', border: 'none', padding: '0.5rem 1.5rem', borderRadius: '3px', fontWeight: 'bold', fontSize: '0.9rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', textTransform: 'uppercase' }}
+                >
+                  KEEP
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal for Branch Creation */}
+      {isBranchModalOpen && (
+        <div style={{
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+          backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1000,
+          display: 'flex', justifyContent: 'center', alignItems: 'flex-start', paddingTop: '100px'
+        }}>
+          <div style={{ backgroundColor: 'white', borderRadius: '4px', width: '500px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', overflow: 'hidden' }}>
+            <div style={{ backgroundColor: '#F97316', padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'white' }}>
+              <h3 style={{ margin: 0, fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <Plus size={18} /> Create/Modify Branch
+              </h3>
+              <button onClick={() => setIsBranchModalOpen(false)} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer' }}>
+                <X size={20} />
+              </button>
+            </div>
+            <div style={{ padding: '2rem' }}>
+              <div style={{ marginBottom: '1.5rem' }}>
+                <label style={{ display: 'block', fontWeight: 'bold', fontSize: '0.85rem', color: '#374151', marginBottom: '0.3rem' }}>Name:</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={branchFormData.name}
+                  onChange={handleBranchFormChange}
+                  className="custom-input"
+                  style={{ width: '100%', padding: '0.5rem', border: '1px solid #D1D5DB', borderRadius: '3px' }}
+                />
+              </div>
+              <div style={{ marginBottom: '1.5rem' }}>
+                <label style={{ display: 'block', fontWeight: 'bold', fontSize: '0.85rem', color: '#374151', marginBottom: '0.3rem' }}>Address:</label>
+                <input
+                  type="text"
+                  name="address"
+                  value={branchFormData.address}
+                  onChange={handleBranchFormChange}
+                  className="custom-input"
+                  style={{ width: '100%', padding: '0.5rem', border: '1px solid #D1D5DB', borderRadius: '3px' }}
+                />
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <input
+                    type="checkbox"
+                    name="principal"
+                    checked={branchFormData.principal}
+                    onChange={handleBranchFormChange}
+                    style={{ width: '18px', height: '18px' }}
+                  />
+                  <label style={{ fontSize: '0.9rem', color: '#374151' }}>Principal</label>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <label style={{ fontSize: '0.9rem', color: '#374151', fontWeight: 'bold' }}>Status:</label>
+                  <div
+                    onClick={() => setBranchFormData(prev => ({ ...prev, status: !prev.status }))}
+                    style={{
+                      width: '40px', height: '20px', backgroundColor: branchFormData.status ? '#22C55E' : '#9CA3AF',
+                      borderRadius: '10px', position: 'relative', cursor: 'pointer', transition: 'background-color 0.2s'
+                    }}
+                  >
+                    <div style={{
+                      width: '16px', height: '16px', backgroundColor: 'white', borderRadius: '50%',
+                      position: 'absolute', top: '2px', left: branchFormData.status ? '22px' : '2px', transition: 'left 0.2s'
+                    }} />
+                  </div>
+                  <span style={{ fontSize: '0.8rem', color: branchFormData.status ? '#22C55E' : '#9CA3AF' }}>{branchFormData.status ? 'Active' : 'Inactive'}</span>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
+                <button
+                  onClick={() => setIsBranchModalOpen(false)}
+                  style={{ background: 'none', color: '#666', border: 'none', padding: '0.5rem 1rem', borderRadius: '3px', fontWeight: 'bold', fontSize: '0.9rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                >
+                  CANCEL
+                </button>
+                <button
+                  onClick={handleSaveBranch}
+                  style={{ backgroundColor: '#F97316', color: 'white', border: 'none', padding: '0.5rem 1.5rem', borderRadius: '3px', fontWeight: 'bold', fontSize: '0.9rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', textTransform: 'uppercase' }}
+                >
+                  <Save size={16} /> SAVE
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal for Template */}
+      {isTemplateModalOpen && (
+        <div style={{
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+          backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1000,
+          display: 'flex', justifyContent: 'center', alignItems: 'flex-start', paddingTop: '100px'
+        }}>
+          <div style={{ backgroundColor: 'white', borderRadius: '4px', width: '600px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', overflow: 'hidden' }}>
+            <div style={{ backgroundColor: '#F97316', padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'white' }}>
+              <h3 style={{ margin: 0, fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <List size={18} /> Instructions template
+              </h3>
+              <button onClick={() => setIsTemplateModalOpen(false)} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer' }}>
+                <X size={20} />
+              </button>
+            </div>
+            <div style={{ padding: '2rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginBottom: '2rem' }}>
+                <div>
+                  <label style={{ display: 'block', fontWeight: 'bold', fontSize: '0.85rem', color: '#374151', marginBottom: '0.3rem' }}>Category</label>
+                  <input
+                    type="text"
+                    value={templateFormData.category}
+                    onChange={(e) => setTemplateFormData({ ...templateFormData, category: e.target.value })}
+                    placeholder="Choose category"
+                    className="custom-input"
+                    style={{ width: '100%', padding: '0.5rem', border: '1px solid #D1D5DB', borderRadius: '3px' }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontWeight: 'bold', fontSize: '0.85rem', color: '#374151', marginBottom: '0.3rem' }}>Type</label>
+                  <select
+                    value={templateFormData.type}
+                    onChange={(e) => setTemplateFormData({ ...templateFormData, type: e.target.value })}
+                    className="custom-select"
+                    style={{ width: '100%', padding: '0.5rem', border: '1px solid #F3F4F6', borderRadius: '3px' }}
+                  >
+                    <option value="">Choosing a type of study</option>
+                    <option value="Type 1">Type 1</option>
+                  </select>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
+                <button
+                  onClick={() => setIsTemplateModalOpen(false)}
+                  style={{ background: 'none', color: '#666', border: 'none', padding: '0.5rem 1rem', borderRadius: '3px', fontWeight: 'bold', fontSize: '0.9rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.2rem' }}
+                >
+                  <X size={14} color="#F97316" /> CANCEL
+                </button>
+                <button
+                  onClick={handleSaveTemplate}
+                  style={{ backgroundColor: '#F97316', color: 'white', border: 'none', padding: '0.5rem 1.5rem', borderRadius: '3px', fontWeight: 'bold', fontSize: '0.9rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', textTransform: 'uppercase' }}
+                >
+                  <Save size={16} /> KEEP
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal for Surgical Service Creation */}
+      {isSurgicalModalOpen && (
+        <div style={{
+          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+          backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1000,
+          display: 'flex', justifyContent: 'center', alignItems: 'flex-start', paddingTop: '100px'
+        }}>
+          <div style={{ backgroundColor: 'white', borderRadius: '4px', width: '500px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', overflow: 'hidden' }}>
+            <div style={{ backgroundColor: '#F97316', padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', color: 'white' }}>
+              <h3 style={{ margin: 0, fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <Plus size={18} /> Nuevo Procedimiento
+              </h3>
+              <button onClick={handleCloseSurgicalModal} style={{ background: 'none', border: 'none', color: 'white', cursor: 'pointer' }}>
+                <X size={20} />
+              </button>
+            </div>
+            <div style={{ padding: '2rem' }}>
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', fontWeight: 'bold', fontSize: '0.85rem', color: '#374151', marginBottom: '0.3rem' }}>Código (Opcional)</label>
+                <input
+                  type="text"
+                  name="codigo"
+                  value={surgicalFormData.codigo}
+                  onChange={handleSurgicalFormChange}
+                  className="custom-input"
+                  style={{ width: '100%', padding: '0.5rem', border: '1px solid #D1D5DB', borderRadius: '3px' }}
+                />
+              </div>
+              <div style={{ marginBottom: '2rem' }}>
+                <label style={{ display: 'block', fontWeight: 'bold', fontSize: '0.85rem', color: '#374151', marginBottom: '0.3rem' }}>Descripción</label>
+                <input
+                  type="text"
+                  name="descripcion"
+                  value={surgicalFormData.descripcion}
+                  onChange={handleSurgicalFormChange}
+                  className="custom-input"
+                  style={{ width: '100%', padding: '0.5rem', border: '1px solid #D1D5DB', borderRadius: '3px' }}
+                />
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
+                <button
+                  onClick={handleCloseSurgicalModal}
+                  style={{ background: 'none', color: '#666', border: 'none', padding: '0.5rem 1rem', borderRadius: '3px', fontWeight: 'bold', fontSize: '0.9rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                >
+                  CANCELAR
+                </button>
+                <button
+                  onClick={handleSaveSurgical}
                   style={{ backgroundColor: '#F97316', color: 'white', border: 'none', padding: '0.5rem 1.5rem', borderRadius: '3px', fontWeight: 'bold', fontSize: '0.9rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
                 >
                   <Check size={16} /> GUARDAR
@@ -1611,8 +2084,435 @@ const Configuration = () => {
             </div>
           )}
 
+          {/* --- CORREOS VIEW --- */}
+          {activeTab === 'Correos' && (
+            <div style={{ backgroundColor: '#F9FAFB', minHeight: '500px' }}>
+              {emailViewMode === 'list' ? (
+                <>
+                  <div style={{ marginBottom: '1rem', borderBottom: '1px solid #F28C28', paddingBottom: '0.5rem' }}>
+                    <h2 style={{ fontSize: '1.4rem', color: '#333', margin: 0 }}>Correos Personales</h2>
+                    <span style={{ fontSize: '0.8rem', color: '#555', fontWeight: '500', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                      <List size={12} /> Configuración de correos personales
+                    </span>
+                  </div>
+
+                  <div style={{ backgroundColor: 'white', padding: '1rem', borderRadius: '4px', boxShadow: '0 1px 2px rgba(0,0,0,0.05)', marginBottom: '1rem', display: 'flex', justifyContent: 'flex-end' }}>
+                    <button
+                      onClick={handleAddEmail}
+                      style={{ backgroundColor: '#F97316', color: 'white', border: 'none', padding: '0.5rem 1rem', borderRadius: '2px', fontWeight: 'bold', fontSize: '0.8rem', cursor: 'pointer', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                    >
+                      <Plus size={16} /> AGREGAR
+                    </button>
+                  </div>
+
+                  <div style={{ backgroundColor: 'white', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', overflow: 'hidden', borderRadius: '4px' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 150px', backgroundColor: '#0B3B3C', color: 'white', padding: '0.8rem 1rem', fontSize: '0.85rem', fontWeight: 'bold' }}>
+                      <div>Descripción</div>
+                      <div>Tipo</div>
+                    </div>
+
+                    {emails.length === 0 ? (
+                      <div style={{ padding: '2rem', textAlign: 'center', color: '#9CA3AF', fontSize: '0.9rem' }}>
+                        No hay correos configurados.
+                      </div>
+                    ) : (
+                      emails.map(email => (
+                        <div key={email.id} style={{ display: 'grid', gridTemplateColumns: '1fr 150px', padding: '1rem', borderBottom: '1px solid #eee', alignItems: 'center', fontSize: '0.85rem', color: '#374151' }}>
+                          <div>{email.asunto}</div>
+                          <div>{email.tipo}</div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', borderBottom: '1px solid #eee', paddingBottom: '1rem' }}>
+                    <h2 style={{ fontSize: '1.2rem', color: '#333', margin: 0 }}>Correos Personalizados</h2>
+                    <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                      <button style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#666', fontWeight: 'bold', fontSize: '0.8rem', textTransform: 'uppercase' }}>
+                        VISTA PREVIA
+                      </button>
+                      <button
+                        onClick={handleSaveEmail}
+                        style={{ backgroundColor: '#F97316', color: 'white', border: 'none', padding: '0.5rem 1.5rem', borderRadius: '2px', fontWeight: 'bold', fontSize: '0.8rem', cursor: 'pointer', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                      >
+                        <Save size={16} /> GUARDAR
+                      </button>
+                    </div>
+                  </div>
+
+                  <div style={{ backgroundColor: 'white', padding: '2rem', borderRadius: '4px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+                    <div style={{ marginBottom: '1.5rem' }}>
+                      <label style={{ display: 'block', fontWeight: 'bold', fontSize: '0.85rem', color: '#374151', marginBottom: '0.5rem' }}>Tipo:</label>
+                      <select
+                        name="tipo"
+                        value={emailFormData.tipo}
+                        onChange={handleEmailFormChange}
+                        className="custom-select"
+                        style={{ width: '100%', maxWidth: '400px', borderColor: '#D1D5DB' }}
+                      >
+                        <option value="">Seleccionar...</option>
+                        <option value="Bienvenida">Bienvenida</option>
+                        <option value="Recordatorio">Recordatorio</option>
+                        <option value="Factura">Factura</option>
+                        <option value="Otro">Otro</option>
+                      </select>
+                    </div>
+
+                    <div style={{ marginBottom: '1.5rem' }}>
+                      <label style={{ display: 'block', fontWeight: 'bold', fontSize: '0.85rem', color: '#374151', marginBottom: '0.5rem' }}>Asunto</label>
+                      <input
+                        type="text"
+                        name="asunto"
+                        value={emailFormData.asunto}
+                        onChange={handleEmailFormChange}
+                        className="custom-input"
+                        style={{ width: '100%', borderColor: '#D1D5DB' }}
+                      />
+                    </div>
+
+                    <div style={{ marginBottom: '1rem' }}>
+                      <label style={{ display: 'block', fontWeight: 'bold', fontSize: '0.85rem', color: '#374151', marginBottom: '0.5rem' }}>Cuerpo</label>
+                      <textarea
+                        name="cuerpo"
+                        value={emailFormData.cuerpo}
+                        onChange={handleEmailFormChange}
+                        rows={10}
+                        style={{ width: '100%', padding: '0.5rem', border: '1px solid #D1D5DB', borderRadius: '3px', resize: 'vertical' }}
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+
+          {/* --- SERVICIOS QUIRURGICOS VIEW --- */}
+          {activeTab === 'Servicios Quirúrgicos' && (
+            <div style={{ backgroundColor: '#F9FAFB', minHeight: '500px' }}>
+              <div style={{ marginBottom: '1rem', borderBottom: '1px solid #F28C28', paddingBottom: '0.5rem' }}>
+                <h2 style={{ fontSize: '1.4rem', color: '#333', margin: 0 }}>Procedimientos Quirúrgicos</h2>
+                <span style={{ fontSize: '0.8rem', color: '#555', fontWeight: '500', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                  <List size={12} /> Creación de Procedimientos Quirúrgicos
+                </span>
+              </div>
+
+              <div style={{ backgroundColor: 'white', padding: '1rem', borderRadius: '4px', boxShadow: '0 1px 2px rgba(0,0,0,0.05)', marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ display: 'flex', alignItems: 'center', flex: 1, gap: '1rem' }}>
+                  <label style={{ fontSize: '0.9rem', color: '#666' }}>Buscar:</label>
+                  <div style={{ position: 'relative', flex: 1, maxWidth: '400px', display: 'flex' }}>
+                    <input
+                      type="text"
+                      value={surgicalSearch}
+                      onChange={(e) => setSurgicalSearch(e.target.value)}
+                      style={{ width: '100%', padding: '0.5rem', border: '1px solid #ddd', borderRadius: '2px', outline: 'none' }}
+                    />
+                    <button style={{ border: '1px solid #ddd', borderLeft: 'none', backgroundColor: 'white', padding: '0 0.5rem', cursor: 'pointer' }}>
+                      <Search size={16} color="#F97316" />
+                    </button>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', gap: '1rem' }}>
+                  <button style={{ color: '#EF4444', background: 'none', border: 'none', fontWeight: 'bold', fontSize: '0.8rem', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                    <X size={14} /> ELIMINAR
+                  </button>
+                  <button
+                    onClick={handleOpenSurgicalModal}
+                    style={{ backgroundColor: '#F97316', color: 'white', border: 'none', padding: '0.5rem 1rem', borderRadius: '2px', fontWeight: 'bold', fontSize: '0.8rem', cursor: 'pointer', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                  >
+                    <Plus size={16} /> AGREGAR
+                  </button>
+                </div>
+              </div>
+
+              <div style={{ backgroundColor: 'white', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', overflow: 'hidden', borderRadius: '4px', minHeight: '300px' }}>
+                <div style={{ backgroundColor: '#0B3B3C', color: 'white', padding: '0.8rem 1rem', fontSize: '0.85rem', fontWeight: 'bold' }}>
+                  Descripción
+                </div>
+
+                {surgicalServices.length === 0 ? (
+                  <div style={{ padding: '4rem', textAlign: 'center', color: '#CCC' }}>
+                    No hay procedimientos registrados
+                  </div>
+                ) : (
+                  surgicalServices
+                    .filter(s => s.descripcion.toLowerCase().includes(surgicalSearch.toLowerCase()))
+                    .map(service => (
+                      <div key={service.id} style={{ padding: '1rem', borderBottom: '1px solid #eee', fontSize: '0.85rem', color: '#374151' }}>
+                        {service.descripcion}
+                      </div>
+                    ))
+                )}
+              </div>
+
+              {/* Pagination Mockup */}
+              <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', backgroundColor: 'white', padding: '0.5rem 1rem', borderRadius: '4px', boxShadow: '0 1px 2px rgba(0,0,0,0.1)', gap: '1rem', color: '#9CA3AF', fontSize: '0.8rem', fontWeight: 'bold' }}>
+                  <span style={{ cursor: 'pointer' }}>«</span>
+                  <span>{surgicalPage}/1</span>
+                  <span style={{ cursor: 'pointer' }}>»</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* --- INDICACIONES VIEW --- */}
+          {activeTab === 'Indicaciones' && (
+            <div style={{ backgroundColor: '#F9FAFB', minHeight: '500px' }}>
+              {/* Top Navigation for Indicaciones */}
+              <div style={{ backgroundColor: '#00897B', display: 'flex', padding: '0 1rem', marginBottom: '1rem' }}>
+                {['Maintenance of Indications', 'Category', 'Template'].map(tab => (
+                  <button
+                    key={tab}
+                    onClick={() => setIndicationsSubTab(tab === 'Maintenance of Indications' ? 'Maintenance' : tab)}
+                    style={{
+                      padding: '1rem 1.5rem',
+                      backgroundColor: indicationsSubTab === (tab === 'Maintenance of Indications' ? 'Maintenance' : tab) ? '#00796B' : 'transparent',
+                      color: 'white',
+                      border: 'none',
+                      fontSize: '0.9rem',
+                      fontWeight: '500',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    {tab}
+                  </button>
+                ))}
+              </div>
+
+              {/* Maintenance Sub-tab */}
+              {indicationsSubTab === 'Maintenance' && (
+                <>
+                  <div style={{ marginBottom: '1rem', borderBottom: '1px solid #F28C28', paddingBottom: '0.5rem' }}>
+                    <h2 style={{ fontSize: '1.4rem', color: '#333', margin: 0 }}>Maintenance of Indications</h2>
+                    <span style={{ fontSize: '0.8rem', color: '#555', fontWeight: '500', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                      <List size={12} /> Instructions
+                    </span>
+                  </div>
+
+                  <div style={{ backgroundColor: 'white', padding: '1rem', borderRadius: '4px', boxShadow: '0 1px 2px rgba(0,0,0,0.05)', marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1 }}>
+                      <label style={{ fontSize: '0.9rem', color: '#666' }}>Look for:</label>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flex: 1, maxWidth: '300px' }}>
+                        <input
+                          type="text"
+                          value={indicationsSearch}
+                          onChange={(e) => setIndicationsSearch(e.target.value)}
+                          style={{ flex: 1, padding: '0.5rem', border: '1px solid #ddd', borderRadius: '2px' }}
+                        />
+                        <Search size={18} color="#F97316" />
+                      </div>
+                    </div>
+                    <div>
+                      <button
+                        onClick={handleOpenIndicationModal}
+                        style={{ backgroundColor: '#F97316', color: 'white', border: 'none', padding: '0.5rem 1.5rem', borderRadius: '2px', fontWeight: 'bold', fontSize: '0.9rem', cursor: 'pointer', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                      >
+                        <Plus size={16} /> ADD
+                      </button>
+                    </div>
+                  </div>
+
+                  <div style={{ backgroundColor: 'white', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', overflow: 'hidden', borderRadius: '4px' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', backgroundColor: '#0B3B3C', color: 'white', padding: '0.8rem 1rem', fontSize: '0.85rem', fontWeight: 'bold' }}>
+                      <div>Description</div>
+                      <div>Type</div>
+                      <div>Result Type</div>
+                    </div>
+                    {indications.map(ind => (
+                      <div key={ind.id} style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', padding: '0.8rem 1rem', borderBottom: '1px solid #eee', fontSize: '0.85rem', color: '#374151' }}>
+                        <div>{ind.description}</div>
+                        <div>{ind.type}</div>
+                        <div>{ind.resultType}</div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', backgroundColor: 'white', padding: '0.5rem 1rem', borderRadius: '4px', boxShadow: '0 1px 2px rgba(0,0,0,0.1)', gap: '1rem', color: '#9CA3AF', fontSize: '0.8rem', fontWeight: 'bold' }}>
+                      <span style={{ cursor: 'pointer' }}>«</span>
+                      <span>1/1</span>
+                      <span style={{ cursor: 'pointer' }}>»</span>
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {/* Category Sub-tab */}
+              {indicationsSubTab === 'Category' && (
+                <>
+                  <div style={{ marginBottom: '1rem', borderBottom: '1px solid #F28C28', paddingBottom: '0.5rem' }}>
+                    <h2 style={{ fontSize: '1.4rem', color: '#333', margin: 0 }}>Maintenance of Indications</h2>
+                    <span style={{ fontSize: '0.8rem', color: '#555', fontWeight: '500', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                      <List size={12} /> Instructions
+                    </span>
+                  </div>
+
+                  <div style={{ backgroundColor: 'white', padding: '1rem', borderRadius: '4px', boxShadow: '0 1px 2px rgba(0,0,0,0.05)', marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1 }}>
+                      <label style={{ fontSize: '0.9rem', color: '#666' }}>Look for:</label>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flex: 1, maxWidth: '300px' }}>
+                        <input
+                          type="text"
+                          value={categorySearch}
+                          onChange={(e) => setCategorySearch(e.target.value)}
+                          style={{ flex: 1, padding: '0.5rem', border: '1px solid #ddd', borderRadius: '2px' }}
+                        />
+                        <Search size={18} color="#F97316" />
+                      </div>
+                    </div>
+                    <div>
+                      <button
+                        onClick={() => {
+                          const name = prompt("Enter Category Description:");
+                          if (name) setCategories([...categories, { id: Date.now(), description: name }]);
+                        }}
+                        style={{ backgroundColor: '#F97316', color: 'white', border: 'none', padding: '0.5rem 1.5rem', borderRadius: '2px', fontWeight: 'bold', fontSize: '0.9rem', cursor: 'pointer', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                      >
+                        <Plus size={16} /> ADD
+                      </button>
+                    </div>
+                  </div>
+
+                  <div style={{ backgroundColor: 'white', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', overflow: 'hidden', borderRadius: '4px' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '50px 1fr', backgroundColor: '#0B3B3C', color: 'white', padding: '0.8rem 1rem', fontSize: '0.85rem', fontWeight: 'bold' }}>
+                      <div>#</div>
+                      <div>Description</div>
+                    </div>
+                    {categories.length > 0 ? categories.map((cat, idx) => (
+                      <div key={cat.id} style={{ display: 'grid', gridTemplateColumns: '50px 1fr', padding: '0.8rem 1rem', borderBottom: '1px solid #eee', fontSize: '0.85rem', color: '#374151' }}>
+                        <div>{idx + 1}</div>
+                        <div>{cat.description}</div>
+                      </div>
+                    )) : (
+                      <div style={{ padding: '2rem', textAlign: 'center', color: '#9CA3AF' }}>No categories found</div>
+                    )}
+                  </div>
+
+                  <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', backgroundColor: 'white', padding: '0.5rem 1rem', borderRadius: '4px', boxShadow: '0 1px 2px rgba(0,0,0,0.1)', gap: '1rem', color: '#9CA3AF', fontSize: '0.8rem', fontWeight: 'bold' }}>
+                      <span style={{ cursor: 'pointer' }}>«</span>
+                      <span>1/1</span>
+                      <span style={{ cursor: 'pointer' }}>»</span>
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {/* Template Sub-tab */}
+              {indicationsSubTab === 'Template' && (
+                <>
+                  <div style={{ marginBottom: '1rem', borderBottom: '1px solid #F28C28', paddingBottom: '0.5rem' }}>
+                    <h2 style={{ fontSize: '1.4rem', color: '#333', margin: 0 }}>Instructions Template</h2>
+                    <span style={{ fontSize: '0.8rem', color: '#555', fontWeight: '500', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                      <List size={12} /> Instructions Template
+                    </span>
+                  </div>
+
+                  <div style={{ marginTop: '2rem', display: 'grid', gridTemplateColumns: 'minmax(300px, 1fr) 2fr', gap: '4rem' }}>
+                    <div>
+                      <h3 style={{ fontSize: '1.1rem', color: '#374151', marginBottom: '1rem', fontWeight: '500' }}>Options to select</h3>
+                      <div style={{ padding: '2rem', border: '1px solid #eee', borderRadius: '4px', minHeight: '100px', backgroundColor: 'white' }}>
+                        {/* Drag source area */}
+                      </div>
+                    </div>
+                    <div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                        <h3 style={{ fontSize: '1.1rem', color: '#374151', margin: 0, fontWeight: '500' }}>Selected options</h3>
+                        <button
+                          onClick={handleOpenTemplateModal}
+                          style={{ backgroundColor: '#22C55E', color: 'white', border: 'none', padding: '0.5rem 1rem', borderRadius: '2px', fontWeight: 'bold', fontSize: '0.8rem', cursor: 'pointer', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                        >
+                          <Plus size={16} /> NEW SECTION
+                        </button>
+                      </div>
+                      <div style={{ backgroundColor: '#E5E7EB', padding: '2rem', textAlign: 'center', color: '#374151', fontSize: '0.9rem', borderRadius: '2px' }}>
+                        Create a new section to start your options.
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
+
+            </div>
+          )}
+
+          {/* --- BRANCHES (SUCURSALES) VIEW --- */}
+          {activeTab === 'Sucursales' && (
+            <div style={{ backgroundColor: '#F9FAFB', minHeight: '500px' }}>
+              <div style={{ marginBottom: '1rem', borderBottom: '1px solid #F28C28', paddingBottom: '0.5rem' }}>
+                <h2 style={{ fontSize: '1.4rem', color: '#333', margin: 0 }}>Branch Maintenance</h2>
+                <span style={{ fontSize: '0.8rem', color: '#555', fontWeight: '500', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                  <List size={12} /> Branches
+                </span>
+              </div>
+
+              <div style={{ backgroundColor: 'white', padding: '1rem', borderRadius: '4px', boxShadow: '0 1px 2px rgba(0,0,0,0.05)', marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1 }}>
+                  <label style={{ fontSize: '0.9rem', color: '#666' }}>Look for:</label>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flex: 1, maxWidth: '300px' }}>
+                    <input
+                      type="text"
+                      value={branchSearch}
+                      onChange={(e) => setBranchSearch(e.target.value)}
+                      style={{ flex: 1, padding: '0.5rem', border: '1px solid #ddd', borderRadius: '2px' }}
+                    />
+                    <Search size={18} color="#F97316" />
+                  </div>
+                </div>
+                <div>
+                  <button
+                    onClick={handleOpenBranchModal}
+                    style={{ backgroundColor: '#F97316', color: 'white', border: 'none', padding: '0.5rem 1.5rem', borderRadius: '2px', fontWeight: 'bold', fontSize: '0.9rem', cursor: 'pointer', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                  >
+                    <Plus size={16} /> ADD
+                  </button>
+                </div>
+              </div>
+
+              <div style={{ backgroundColor: 'white', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', overflow: 'hidden', borderRadius: '4px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '2fr 2fr 1fr 1fr', backgroundColor: '#0B3B3C', color: 'white', padding: '0.8rem 1rem', fontSize: '0.85rem', fontWeight: 'bold' }}>
+                  <div>Name</div>
+                  <div>Address</div>
+                  <div style={{ textAlign: 'center' }}>Principal</div>
+                  <div style={{ textAlign: 'center' }}>Status</div>
+                </div>
+                {branches.length > 0 ? branches.map(branch => (
+                  <div key={branch.id} style={{ display: 'grid', gridTemplateColumns: '2fr 2fr 1fr 1fr', padding: '0.8rem 1rem', borderBottom: '1px solid #eee', fontSize: '0.85rem', color: '#374151', alignItems: 'center' }}>
+                    <div>{branch.name}</div>
+                    <div>{branch.address}</div>
+                    <div style={{ textAlign: 'center' }}>
+                      {branch.principal && <Check size={16} color="#22C55E" />}
+                    </div>
+                    <div style={{ textAlign: 'center' }}>
+                      <span style={{
+                        backgroundColor: branch.status ? '#DCFCE7' : '#F3F4F6',
+                        color: branch.status ? '#166534' : '#6B7280',
+                        padding: '0.2rem 0.6rem', borderRadius: '10px', fontSize: '0.75rem', fontWeight: 'bold'
+                      }}>
+                        {branch.status ? 'ACTIVE' : 'INACTIVE'}
+                      </span>
+                    </div>
+                  </div>
+                )) : (
+                  <div style={{ padding: '2rem', textAlign: 'center', color: '#9CA3AF' }}>No branches found</div>
+                )}
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', backgroundColor: 'white', padding: '0.5rem 1rem', borderRadius: '4px', boxShadow: '0 1px 2px rgba(0,0,0,0.1)', gap: '1rem', color: '#9CA3AF', fontSize: '0.8rem', fontWeight: 'bold' }}>
+                  <span style={{ cursor: 'pointer' }}>«</span>
+                  <span>1/1</span>
+                  <span style={{ cursor: 'pointer' }}>»</span>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* --- PLACEHOLDER FOR OTHER TABS --- */}
-          {!['Perfil General', 'Programas', 'Posiciones de trabajo', 'Estados de cita', 'Plan de Indicadores', 'Dashboard Pacientes', 'Permisos Dashboard Pacientes', 'Flujo de Operación', 'Servicios', 'Especialidades'].includes(activeTab) && (
+          {!['Perfil General', 'Programas', 'Posiciones de trabajo', 'Estados de cita', 'Plan de Indicadores', 'Dashboard Pacientes', 'Permisos Dashboard Pacientes', 'Flujo de Operación', 'Servicios', 'Especialidades', 'Correos', 'Servicios Quirúrgicos', 'Indicaciones', 'Sucursales'].includes(activeTab) && (
             <div style={{ padding: '4rem', textAlign: 'center', color: '#9CA3AF' }}>
               Section "{activeTab}" under construction
             </div>

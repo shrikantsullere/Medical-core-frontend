@@ -280,21 +280,148 @@
   border-radius: 2px;
 }
 
+/* Authorization Flow Specifics */
+.auth-flex-container {
+  display: flex;
+  gap: 2rem;
+}
+
+.auth-flex-item {
+  flex: 1;
+}
+
+.auth-summary-card {
+  width: 350px;
+}
+
+@media (max-width: 992px) {
+  .auth-flex-container {
+    flex-direction: column;
+  }
+
+  .auth-summary-card {
+    width: 100%;
+  }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1024px) {
+  :root {
+    --sidebar-width: 240px;
+  }
+}
+
 @media (max-width: 768px) {
+  .dashboard-container {
+    flex-direction: column;
+  }
+
   .sidebar {
     position: fixed;
     left: -var(--sidebar-width);
-    z-index: 100;
+    z-index: 1000;
     height: 100vh;
+    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
   }
 
   .sidebar.open {
     left: 0;
   }
 
+  /* Overlay for mobile sidebar */
+  .sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 999;
+    backdrop-filter: blur(2px);
+  }
+
+  .workspace {
+    padding: 1rem;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .action-buttons {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .btn-continue,
+  .btn-new-doctor {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .step-bar {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+    display: block;
+    /* Change from flex to block for horizontal scroll */
+  }
+
+  .step {
+    display: inline-block;
+    min-width: 140px;
+    padding: 0.8rem 1rem;
+  }
+
   .form-section {
     flex-direction: column;
     gap: 1.5rem;
+  }
+
+  .form-group {
+    max-width: 100%;
+  }
+
+  /* Modal responsiveness */
+  .modal-container {
+    width: 95% !important;
+    margin: 10px;
+  }
+
+  /* Table responsiveness */
+  .maint-table-container {
+    overflow-x: auto;
+  }
+
+  .maint-table {
+    min-width: 600px;
+  }
+}
+
+@media (max-width: 480px) {
+  .top-header {
+    padding: 0 1rem;
+  }
+
+  .sidebar-logo h1 {
+    font-size: 1.4rem;
+  }
+
+  .page-title {
+    font-size: 1.25rem;
+  }
+
+  .search-input-wrapper {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .search-icons {
+    margin-left: 0;
+    justify-content: center;
+    width: 100%;
   }
 }
 

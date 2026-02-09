@@ -1757,7 +1757,7 @@ const Configuration = () => {
           )}
 
           {/* --- FLUJO DE OPERACION VIEW --- */}
-          {activeTab === 'Flujo de Operación' && (
+          o          {activeTab === 'Flujo de Operación' && (
             <div style={{ backgroundColor: '#F9FAFB', minHeight: '500px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', borderBottom: '1px solid #F28C28', paddingBottom: '0.5rem' }}>
                 <h2 style={{ fontSize: '1.4rem', color: '#333', margin: 0 }}>

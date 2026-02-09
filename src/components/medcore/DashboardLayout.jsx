@@ -24,6 +24,10 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     { label: 'UPLOAD VIA EXCEL', path: '/upload-excel' },
     { label: 'AUTHORIZATION REPORT', path: '/authorization-report' },
     { label: 'USAGE REPORT', path: '/usage-report' },
+    { label: 'FEE', path: '/fee' },
+    { label: 'QUESTIONS', path: '/questions' },
+    { label: 'USER MANUAL', path: '/user-manual' },
+    { label: 'CONTACT US', path: '/contact-us' },
   ];
 
   return (
@@ -80,12 +84,31 @@ const Header = ({ toggleSidebar }) => {
 };
 
 const DashboardLayout = ({ children }) => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth > 768);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth > 1024);
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+  const closeSidebar = () => setIsSidebarOpen(false);
+
+  // Close sidebar on window resize to mobile
+  React.useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 1024) {
+        setIsSidebarOpen(false);
+      } else {
+        setIsSidebarOpen(true);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   return (
     <div className="dashboard-container">
+      {/* Mobile Overlay */}
+      {isSidebarOpen && window.innerWidth <= 1024 && (
+        <div className="sidebar-overlay" onClick={closeSidebar}></div>
+      )}
+
       <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
       <div className="main-content">

@@ -15,6 +15,10 @@ const UploadExcel = lazy(() => import('./pages/medcore/UploadExcel'));
 const AuthorizationReport = lazy(() => import('./pages/medcore/AuthorizationReport'));
 const UsageReport = lazy(() => import('./pages/medcore/UsageReport'));
 const Configuration = lazy(() => import('./pages/medcore/Configuration'));
+const Fee = lazy(() => import('./pages/medcore/Fee'));
+const Questions = lazy(() => import('./pages/medcore/Questions'));
+const UserManual = lazy(() => import('./pages/medcore/UserManual'));
+const ContactUs = lazy(() => import('./pages/medcore/ContactUs'));
 
 // Simulated Protected Route
 const ProtectedRoute = ({ children }) => {
@@ -43,6 +47,10 @@ const App = () => {
               <Route path="/authorization-report" element={<ProtectedRoute><AuthorizationReport /></ProtectedRoute>} />
               <Route path="/usage-report" element={<ProtectedRoute><UsageReport /></ProtectedRoute>} />
               <Route path="/configuration" element={<ProtectedRoute><Configuration /></ProtectedRoute>} />
+              <Route path="/fee" element={<ProtectedRoute><Fee /></ProtectedRoute>} />
+              <Route path="/questions" element={<ProtectedRoute><Questions /></ProtectedRoute>} />
+              <Route path="/user-manual" element={<ProtectedRoute><UserManual /></ProtectedRoute>} />
+              <Route path="/contact-us" element={<ProtectedRoute><ContactUs /></ProtectedRoute>} />
 
               <Route path="*" element={<Navigate to="/" />} />
             </Routes>

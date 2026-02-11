@@ -17,15 +17,15 @@ export const StatCard = ({ title, value, color, icon: Icon, trend }) => (
 );
 
 export const SectionHeader = ({ title, desc, actionLabel, onAction }) => (
-  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+  <div className="flex-responsive" style={{ marginBottom: '2rem' }}>
     <div>
-      <h1>{title}</h1>
+      <h1 style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--heading)', marginBottom: '0.2rem' }}>{title}</h1>
       <p style={{ color: 'var(--text-muted)' }}>{desc}</p>
     </div>
     {actionLabel && (
       <button
         onClick={onAction}
-        style={{ background: 'var(--primary)', color: 'white', padding: '0.75rem 1.5rem', borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}
+        style={{ background: 'var(--primary)', color: 'white', padding: '0.75rem 1.5rem', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600, border: 'none', cursor: 'pointer', whiteSpace: 'nowrap' }}
       >
         <Plus size={20} /> {actionLabel}
       </button>

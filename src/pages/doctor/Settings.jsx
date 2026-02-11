@@ -41,7 +41,7 @@ const Settings = () => {
           <div className="fade-in">
             <div className="card" style={{ marginBottom: '1.5rem', backgroundColor: 'var(--bg-sidebar)' }}>
               <h3 style={{ marginBottom: '1.5rem', color: 'var(--heading)' }}>Información Básica</h3>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+              <div className="grid-responsive">
                 <div style={{ gridColumn: 'span 2' }}>
                   <label style={{ ...labelStyle, color: 'var(--text-muted)' }}>Nombre Completo</label>
                   <input type="text" defaultValue="Dr. Sameer Khan" style={{ ...inputStyle, backgroundColor: 'var(--bg-main)', color: 'var(--text-main)', border: '1px solid var(--border)' }} />
@@ -76,7 +76,7 @@ const Settings = () => {
                 </div>
                 <div>
                   <label style={{ ...labelStyle, color: 'var(--text-muted)' }}>Horarios de Consulta</label>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                  <div className="grid-responsive" style={{ gap: '1rem' }}>
                     <input type="time" defaultValue="10:00" style={{ ...inputStyle, backgroundColor: 'var(--bg-main)', color: 'var(--text-main)', border: '1px solid var(--border)' }} />
                     <input type="time" defaultValue="18:00" style={{ ...inputStyle, backgroundColor: 'var(--bg-main)', color: 'var(--text-main)', border: '1px solid var(--border)' }} />
                   </div>

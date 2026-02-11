@@ -123,8 +123,8 @@ const Layout = ({ children }) => {
         )}
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="hide-mobile"
-          style={{ padding: '0.5rem', borderRadius: '0.5rem', backgroundColor: 'var(--bg-header)', color: 'var(--primary)' }}
+          className="hide-on-laptop"
+          style={{ padding: '0.5rem', borderRadius: '0.5rem', backgroundColor: 'var(--bg-header)', color: 'var(--primary)', border: 'none', cursor: 'pointer' }}
         >
           {sidebarOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
@@ -132,13 +132,14 @@ const Layout = ({ children }) => {
         {/* Mobile Close Button */}
         <button
           onClick={() => setMobileMenuOpen(false)}
-          className="show-mobile"
+          className="show-on-laptop"
           style={{
-            display: window.innerWidth < 1024 ? 'flex' : 'none',
             padding: '0.5rem',
             borderRadius: '0.5rem',
             backgroundColor: 'var(--bg-header)',
-            color: 'var(--primary)'
+            color: 'var(--primary)',
+            border: 'none',
+            cursor: 'pointer'
           }}
         >
           <X size={20} />
@@ -165,7 +166,8 @@ const Layout = ({ children }) => {
                 justifyContent: (sidebarOpen || mobileMenuOpen) ? 'flex-start' : 'center',
                 boxShadow: isActive ? '0 8px 16px -4px rgba(139, 92, 246, 0.4)' : 'none',
                 position: 'relative',
-                overflow: 'hidden'
+                overflow: 'hidden',
+                textDecoration: 'none'
               }}
               onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.backgroundColor = 'var(--bg-sidebar-active)'; }}
               onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.backgroundColor = 'transparent'; }}
@@ -192,7 +194,9 @@ const Layout = ({ children }) => {
             color: 'var(--danger)',
             backgroundColor: '#fee2e2',
             justifyContent: (sidebarOpen || mobileMenuOpen) ? 'flex-start' : 'center',
-            fontWeight: 700
+            fontWeight: 700,
+            border: 'none',
+            cursor: 'pointer'
           }}
         >
           <LogOut size={20} />
@@ -208,16 +212,17 @@ const Layout = ({ children }) => {
       <motion.aside
         initial={false}
         animate={{ width: sidebarOpen ? '280px' : '80px' }}
+        className="hide-on-laptop"
         style={{
           backgroundColor: 'var(--bg-sidebar)',
           borderRight: '1px solid var(--border)',
-          display: window.innerWidth < 1024 ? 'none' : 'flex',
           flexDirection: 'column',
           position: 'sticky',
           top: 0,
           height: '100vh',
           zIndex: 50,
-          boxShadow: '4px 0 10px rgba(76, 29, 149, 0.05)'
+          boxShadow: '4px 0 10px rgba(76, 29, 149, 0.05)',
+          display: 'flex'
         }}
       >
         <SidebarContent />
@@ -264,7 +269,8 @@ const Layout = ({ children }) => {
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
             <button
               onClick={() => setMobileMenuOpen(true)}
-              style={{ display: window.innerWidth < 1024 ? 'flex' : 'none', padding: '0.5rem', borderRadius: '10px', background: 'var(--bg-sidebar)', color: 'var(--primary)', border: '1px solid var(--border)' }}
+              className="show-on-laptop"
+              style={{ padding: '0.5rem', borderRadius: '10px', background: 'var(--bg-sidebar)', color: 'var(--primary)', border: '1px solid var(--border)' }}
             >
               <Menu size={24} />
             </button>
@@ -295,7 +301,7 @@ const Layout = ({ children }) => {
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', backgroundColor: 'var(--bg-sidebar)', padding: '0.4rem 0.6rem', borderRadius: '14px', border: '1px solid var(--border)' }}>
-              <div style={{ textAlign: 'right', display: window.innerWidth < 480 ? 'none' : 'block' }}>
+              <div className="desktop-only" style={{ textAlign: 'right' }}>
                 <p style={{ fontSize: '0.9rem', fontWeight: 800, color: 'var(--heading)' }}>{user.name}</p>
                 <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>{user.role}</p>
               </div>

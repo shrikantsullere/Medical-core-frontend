@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../../components/medcore/DashboardLayout';
-import { Search, UserPlus, Download, ArrowLeft, RotateCcw, Check, Plus, FileText, FileSpreadsheet } from 'lucide-react';
+import { Search, UserPlus, Download, ArrowLeft, RotateCcw, Check, Plus, FileSpreadsheet, X } from 'lucide-react';
 
 const Employees = () => {
   const [view, setView] = useState('list'); // 'list' | 'add'
@@ -15,13 +16,15 @@ const Employees = () => {
     appointmentView1: '',
     appointmentView2: '',
     representative: false,
-    asset: false,
+    asset: true,
     printSignature: false,
     printStamp: false
   });
 
   const [linkedDoctors, setLinkedDoctors] = useState([]);
   const [assignedRoles, setAssignedRoles] = useState([]);
+
+  const navigate = useNavigate();
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -57,7 +60,7 @@ const Employees = () => {
 
   const handleSave = () => {
     const finalData = { ...formData, linkedDoctors, assignedRoles };
-    alert('Saving Employee: ' + JSON.stringify(finalData));
+    alert('Synchronizing Personnel Data: ' + JSON.stringify(finalData));
     setView('list');
   };
 
@@ -65,7 +68,7 @@ const Employees = () => {
     setFormData({
       name: '', lastName: '', email: '', pin: '',
       appointmentView1: '', appointmentView2: '',
-      representative: false, asset: false,
+      representative: false, asset: true,
       printSignature: false, printStamp: false
     });
     setLinkedDoctors([]);
@@ -73,280 +76,312 @@ const Employees = () => {
     setView('add');
   };
 
-  return (
-    <DashboardLayout>
-      {view === 'list' && (
-        <>
-          <div className="page-header bordered">
-            <div className="title-section">
-              <h2 className="page-title">List of Employees</h2>
-              <span className="breadcrumb-sub">
-                <FileText size={16} /> List of Employees
-              </span>
+  const renderListView = () => (
+    <div className="employees-list-view" style={{ animation: 'fadeIn 0.4s ease-out' }}>
+      <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3.5rem', flexWrap: 'wrap', gap: '2rem' }}>
+        <div>
+          <h2 className="page-title" style={{ margin: 0, fontSize: '2.5rem', fontWeight: '900', color: '#1E293B', letterSpacing: '-0.025em' }}>Staff <span style={{ color: '#0D9488' }}>Intelligence</span></h2>
+          <p style={{ color: '#64748B', margin: '0.5rem 0 0', fontSize: '1.1rem', fontWeight: '500' }}>Manage clinical personnel, access permissions, and operational hierarchies.</p>
+        </div>
+        <div style={{ display: 'flex', gap: '1.25rem', flexWrap: 'wrap' }}>
+          <button className="btn-secondary" onClick={() => navigate('/upload-excel')} style={{ height: '52px', padding: '0 1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem', fontWeight: '700' }}>
+            <FileSpreadsheet size={20} /> BATCH TRANSFER
+          </button>
+          <button className="btn-primary" onClick={handleNewEmployee} style={{ height: '52px', padding: '0 2.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem', fontWeight: '900', borderRadius: '14px' }}>
+            <UserPlus size={22} /> ONBOARD STAFF
+          </button>
+        </div>
+      </div>
+
+      <div className="card" style={{ padding: '2.5rem', marginBottom: '3rem', border: '1px solid #E2E8F0', borderRadius: '32px', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.03)' }}>
+        <div style={{ position: 'relative', maxWidth: '700px' }}>
+          <label style={{ position: 'absolute', top: '-11px', left: '16px', backgroundColor: '#0D9488', color: 'white', padding: '0 12px', fontSize: '0.75rem', fontWeight: '900', borderRadius: '6px', zIndex: 1, letterSpacing: '0.1em' }}>UNIVERSAL SEARCH</label>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+            <div style={{ position: 'relative', flex: 1 }}>
+              <input type="text" className="custom-input" placeholder="Search by name, email identity, or staff ID..." style={{ width: '100%', paddingLeft: '3rem', height: '56px', fontSize: '1rem' }} value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+              <Search size={22} color="#94A3B8" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
             </div>
-            <div style={{ display: 'flex', gap: '1rem' }}>
-              <button className="btn-upload-text" onClick={() => window.location.href = '/medcore/upload-excel'}>
-                <FileSpreadsheet size={16} /> UPLOAD EXCEL
-              </button>
-              <button className="btn-new-doctor" onClick={handleNewEmployee}>
-                <UserPlus size={16} />
-                NEW EMPLOYEE
-              </button>
+            <button className="btn-secondary" style={{ width: '56px', height: '56px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '16px' }} title="Synchronize Directory">
+              <Download size={24} />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="card" style={{ overflow: 'hidden', border: '1px solid #E2E8F0', borderRadius: '32px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.05)' }}>
+        <div className="maint-table-container">
+          <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '1000px' }}>
+            <thead>
+              <tr style={{ backgroundColor: '#0B3B3C', color: 'white' }}>
+                <th style={{ padding: '1.5rem 2rem', textAlign: 'left', fontWeight: '800', fontSize: '0.85rem', letterSpacing: '0.05em' }}>PERSONNEL IDENTITY</th>
+                <th style={{ padding: '1.5rem 2rem', textAlign: 'left', fontWeight: '800', fontSize: '0.85rem', letterSpacing: '0.05em' }}>ELECTRONIC MAIL</th>
+                <th style={{ padding: '1.5rem 2rem', textAlign: 'left', fontWeight: '800', fontSize: '0.85rem', letterSpacing: '0.05em' }}>LAST SYNCHRONIZATION</th>
+                <th style={{ padding: '1.5rem 2rem', textAlign: 'center', fontWeight: '800', fontSize: '0.85rem', letterSpacing: '0.05em' }}>OPERATIONAL STATE</th>
+                <th style={{ padding: '1.5rem 2rem', textAlign: 'center', fontWeight: '800', fontSize: '0.85rem', letterSpacing: '0.05em', width: '160px' }}>MANAGEMENT</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                { id: 1, name: 'Juan Perez', email: 'juan.perez@medcore.com', activity: 'Today, 10:24 AM', status: 'Active' },
+                { id: 2, name: 'Maria Garcia', email: 'm.garcia@medcore.com', activity: 'Yesterday', status: 'Active' },
+                { id: 3, name: 'Carlos Rodriguez', email: 'c.rod@medcore.com', activity: 'Feb 08, 2026', status: 'Inactive' },
+                { id: 4, name: 'Ana Martinez', email: 'ana.m@medcore.com', activity: 'Today, 09:15 AM', status: 'Active' },
+                { id: 5, name: 'Luis Hernandez', email: 'l.hernandez@medcore.com', activity: 'Feb 05, 2026', status: 'Active' },
+              ].filter(emp => emp.name.toLowerCase().includes(searchTerm.toLowerCase())).map((emp, idx) => (
+                <tr key={emp.id} style={{ borderBottom: '1px solid #F1F5F9', backgroundColor: idx % 2 === 0 ? 'white' : '#F9FAFB', transition: 'all 0.2s' }} className="table-row-hover">
+                  <td style={{ padding: '1.5rem 2rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+                      <div style={{ width: '52px', height: '52px', borderRadius: '18px', background: 'linear-gradient(135deg, #0D9488 0%, #065F46 100%)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1rem', fontWeight: '900', boxShadow: '0 8px 16px rgba(13, 148, 136, 0.2)' }}>
+                        {emp.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()}
+                      </div>
+                      <div>
+                        <div style={{ fontWeight: '900', color: '#1E293B', fontSize: '1.1rem', letterSpacing: '-0.01em' }}>{emp.name}</div>
+                        <div style={{ fontSize: '0.75rem', color: '#94A3B8', fontWeight: '700', marginTop: '0.2rem' }}>ID: EMP-{emp.id.toString().padStart(4, '0')}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td style={{ padding: '1.5rem 2rem', color: '#64748B', fontSize: '1rem', fontWeight: '700' }}>{emp.email}</td>
+                  <td style={{ padding: '1.5rem 2rem', color: '#94A3B8', fontSize: '0.9rem', fontWeight: '600' }}>{emp.activity}</td>
+                  <td style={{ padding: '1.5rem 2rem', textAlign: 'center' }}>
+                    <span style={{
+                      backgroundColor: emp.status === 'Active' ? '#F0FDFA' : '#FEF2F2',
+                      color: emp.status === 'Active' ? '#0D9488' : '#EF4444',
+                      padding: '0.5rem 1.25rem',
+                      borderRadius: '100px',
+                      fontSize: '0.75rem',
+                      fontWeight: '900',
+                      letterSpacing: '0.05em',
+                      border: '1.5px solid currentColor'
+                    }}>
+                      {emp.status === 'Active' ? 'OPERATIONAL' : 'OFFLINE'}
+                    </span>
+                  </td>
+                  <td style={{ padding: '1.5rem 2rem', textAlign: 'center' }}>
+                    <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem' }}>
+                      <button onClick={() => setView('add')} title="Configure Protocol" style={{ background: 'none', border: '1.5px solid #E2E8F0', color: '#64748B', cursor: 'pointer', padding: '0.6rem', borderRadius: '12px', transition: 'all 0.2s' }} className="action-btn">
+                        <Plus size={20} />
+                      </button>
+                      <button title="Execute Audit" style={{ background: 'none', border: '1.5px solid #E2E8F0', color: '#64748B', cursor: 'pointer', padding: '0.6rem', borderRadius: '12px', transition: 'all 0.2s' }} className="action-btn">
+                        <Search size={20} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderMaintenanceView = () => (
+    <div className="maintenance-container" style={{ maxWidth: '1400px', margin: '0 auto', animation: 'fadeIn 0.4s ease-out' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4rem', flexWrap: 'wrap', gap: '2rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
+          <button onClick={() => setView('list')} style={{ backgroundColor: 'white', border: '1.5px solid #E2E8F0', width: '52px', height: '52px', borderRadius: '16px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748B', transition: 'all 0.2s' }} className="back-link">
+            <ArrowLeft size={24} />
+          </button>
+          <div>
+            <h2 style={{ fontSize: '2.5rem', fontWeight: '900', color: '#1E293B', margin: 0, letterSpacing: '-0.025em' }}>Staff <span style={{ color: '#0D9488' }}>Credentials</span></h2>
+            <p style={{ color: '#64748B', margin: '0.5rem 0 0', fontSize: '1.1rem', fontWeight: '500' }}>Comprehensive management of organizational access and personnel matrix.</p>
+          </div>
+        </div>
+        <div style={{ display: 'flex', gap: '1.25rem', alignItems: 'center' }}>
+          <button className="btn-secondary" style={{ height: '52px', padding: '0 1.5rem', fontWeight: '700' }} onClick={() => alert('Security override protocol initialized...')}>
+            <RotateCcw size={20} /> RESET AUTHENTICATION
+          </button>
+          <button className="btn-primary" style={{ height: '52px', padding: '0 2.5rem', fontWeight: '900', borderRadius: '14px' }} onClick={handleSave}>
+            <Check size={24} /> SYNCHRONIZE DATA
+          </button>
+        </div>
+      </div>
+
+      <div className="card" style={{ padding: '3.5rem', marginBottom: '3rem', border: '1px solid #E2E8F0', borderRadius: '32px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.05)' }}>
+        <h3 style={{ fontSize: '1.4rem', color: '#1E293B', marginBottom: '3.5rem', fontWeight: '900', borderBottom: '2px solid #F1F5F9', paddingBottom: '1.5rem', letterSpacing: '-0.01em' }}>IDENTITY & <span style={{ color: '#0D9488' }}>SECURITY MATRIX</span></h3>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(450px, 1fr))', gap: '5rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+            <div className="form-group-row">
+              <label className="required">GIVEN NAME:</label>
+              <input type="text" name="name" className="custom-input" value={formData.name} onChange={handleInputChange} placeholder="Required Field" />
+            </div>
+            <div className="form-group-row">
+              <label className="required">LEGAL SURNAME:</label>
+              <input type="text" name="lastName" className="custom-input" value={formData.lastName} onChange={handleInputChange} placeholder="Required Field" />
+            </div>
+            <div className="form-group-row">
+              <label className="required">SECURE EMAIL:</label>
+              <input type="email" name="email" className="custom-input" value={formData.email} onChange={handleInputChange} placeholder="staff.identity@medcore.com" />
             </div>
           </div>
-
-          <div className="card" style={{ padding: '2rem', minHeight: '500px', backgroundColor: 'white', borderRadius: '4px', boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }}>
-            <div className="search-container">
-              <label className="search-label">LOOK FOR:</label>
-              <div className="search-input-wrapper">
-                <input
-                  type="text"
-                  placeholder="Look for"
-                  className="search-input"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-                <div className="search-icons">
-                  <button className="search-icon-btn" title="Upload from Excel" onClick={() => window.location.href = '/medcore/upload-excel'}>
-                    <FileSpreadsheet size={20} strokeWidth={2.5} />
-                  </button>
-                  <button className="search-icon-btn" title="Export/Download">
-                    <Download size={20} strokeWidth={2.5} />
-                  </button>
-                </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+            <div className="form-group-row">
+              <label>SYSTEM PIN:</label>
+              <div style={{ position: 'relative', flex: 1 }}>
+                <input type="text" name="pin" className="custom-input disabled" value={formData.pin} readOnly placeholder="ENCRYPTED" style={{ backgroundColor: '#F8FAFC', fontWeight: '900', fontFamily: 'monospace', letterSpacing: '0.1em' }} />
+                <span style={{ position: 'absolute', right: '16px', top: '50%', transform: 'translateY(-50%)', fontSize: '0.7rem', color: '#94A3B8', fontWeight: '900' }}>READ-ONLY</span>
               </div>
             </div>
-
-            <div className="empty-state">
-              No existe información para mostrar
+            <div className="form-group-row">
+              <label>VISIBILITY SCHEMA:</label>
+              <div style={{ display: 'flex', gap: '1.25rem', flex: 1 }}>
+                <select name="appointmentView1" className="custom-select" value={formData.appointmentView1} onChange={handleInputChange} style={{ fontWeight: '700' }}>
+                  <option value="">Primary Filter...</option>
+                </select>
+                <select name="appointmentView2" className="custom-select" value={formData.appointmentView2} onChange={handleInputChange} style={{ fontWeight: '700' }}>
+                  <option value="">Secondary Filter...</option>
+                </select>
+              </div>
             </div>
-          </div>
-        </>
-      )}
-
-      {view === 'add' && (
-        <div className="maintenance-view">
-          <div className="maint-header">
-            <div className="maint-title-group">
-              <h2 className="maint-title">Employee Maintenance</h2>
-              <span className="maint-subtitle">Add an Employee</span>
-            </div>
-            <div className="maint-actions">
-              <button className="maint-btn-text" onClick={() => setView('list')}>
-                <ArrowLeft size={14} /> GO BACK
-              </button>
-              <button className="maint-btn-text" onClick={handleNewEmployee}>
-                <UserPlus size={14} /> NEW EMPLOYEE
-              </button>
-              <button className="maint-btn-text" onClick={() => alert('Reset Password!')}>
-                <RotateCcw size={14} /> RESET PASSWORD
-              </button>
-              <button className="maint-btn-primary" onClick={handleSave}>
-                <Check size={14} /> KEEP
-              </button>
+            <div style={{ display: 'flex', gap: '3.5rem', marginTop: '0.5rem', paddingLeft: '280px' }}>
+              <label className="checkbox-standard">
+                <input type="checkbox" name="representative" checked={formData.representative} onChange={handleInputChange} className="custom-checkbox" /> SALES REP
+              </label>
+              <label className="checkbox-active">
+                <input type="checkbox" name="asset" checked={formData.asset} onChange={handleInputChange} className="custom-checkbox" /> ACTIVE PERSONNEL
+              </label>
             </div>
           </div>
+        </div>
 
-          <div className="maint-form-content">
-            <div className="form-grid">
-              <div className="form-row">
-                <label className="required-label">Name:</label>
-                <div className="input-col">
-                  <input type="text" name="name" value={formData.name} onChange={handleInputChange} className="maint-input" />
-                </div>
-              </div>
-
-              <div className="form-row">
-                <label className="required-label">Last name:</label>
-                <div className="input-col">
-                  <input type="text" name="lastName" value={formData.lastName} onChange={handleInputChange} className="maint-input" />
-                </div>
-              </div>
-
-              <div className="form-row">
-                <label className="required-label">Email:</label>
-                <div className="input-col">
-                  <input type="email" name="email" value={formData.email} onChange={handleInputChange} placeholder="me@ejemplo.com" className="maint-input" />
-                </div>
-              </div>
-
-              <div className="form-row">
-                <label>PIN:</label>
-                <div className="input-col">
-                  <input type="text" name="pin" value={formData.pin} onChange={handleInputChange} disabled className="maint-input disabled" />
-                </div>
-              </div>
-
-              <div className="form-row">
-                <label>Appointment view:</label>
-                <div className="input-col split-inputs">
-                  <select name="appointmentView1" value={formData.appointmentView1} onChange={handleInputChange} className="maint-select">
-                    <option value="">Choosing an insurance company ...</option>
-                  </select>
-                  <select name="appointmentView2" value={formData.appointmentView2} onChange={handleInputChange} className="maint-select">
-                    <option value="">Choosing an insurance company ...</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="form-row checkbox-row">
-                <label>Representative:</label>
-                <div className="input-col">
-                  <input type="checkbox" name="representative" checked={formData.representative} onChange={handleInputChange} />
-                </div>
-              </div>
-
-              <div className="form-row checkbox-row">
-                <label>Asset:</label>
-                <div className="input-col">
-                  <input type="checkbox" name="asset" checked={formData.asset} onChange={handleInputChange} />
-                </div>
-              </div>
-
-              <div className="form-row">
-                <label>Digital Signature and Seal:</label>
-                <div className="input-col horizontal-group">
-                  <button className="btn-view-add" onClick={() => alert('View/Add Signature')}>VIEW / ADD +</button>
-                  <div className="checkbox-group">
-                    <label><input type="checkbox" name="printSignature" checked={formData.printSignature} onChange={handleInputChange} /> Print Signature</label>
-                    <label><input type="checkbox" name="printStamp" checked={formData.printStamp} onChange={handleInputChange} /> Print Stamp</label>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="sub-sections-container">
-              <div className="maint-sub-section">
-                <div className="section-header-bar">
-                  <span>Doctor</span>
-                  <button className="btn-add-section" onClick={addDoctorRow}>+ ADD</button>
-                </div>
-                <div className="section-content-table">
-                  <table className="maint-inner-table">
-                    <thead>
-                      <tr>
-                        <th>Name</th>
-                        <th style={{ width: '50px' }}></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {linkedDoctors.length === 0 ? (
-                        <tr>
-                          <td colSpan="2" className="empty-table-msg">No existe información para mostrar</td>
-                        </tr>
-                      ) : (
-                        linkedDoctors.map(doctor => (
-                          <tr key={doctor.id}>
-                            <td>
-                              <select
-                                className="table-select-clean"
-                                value={doctor.doctorId}
-                                onChange={(e) => handleDoctorChange(doctor.id, e.target.value)}
-                              >
-                                <option value="">Choosing a doctor...</option>
-                                <option value="1">Dr. Juan Perez</option>
-                                <option value="2">Dra. Maria Garcia</option>
-                              </select>
-                            </td>
-                            <td style={{ textAlign: 'center' }}>
-                              <button className="btn-remove-row" onClick={() => removeDoctorRow(doctor.id)}>×</button>
-                            </td>
-                          </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
-              <div className="maint-sub-section">
-                <div className="section-header-bar">
-                  <span>Role</span>
-                  <button className="btn-add-section" onClick={addRoleRow}>+ ADD</button>
-                </div>
-                <div className="section-content-table">
-                  <table className="maint-inner-table">
-                    <thead>
-                      <tr>
-                        <th>Name</th>
-                        <th style={{ width: '50px' }}></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {assignedRoles.length === 0 ? (
-                        <tr>
-                          <td colSpan="2" className="empty-table-msg">No existe información para mostrar</td>
-                        </tr>
-                      ) : (
-                        assignedRoles.map(role => (
-                          <tr key={role.id}>
-                            <td>
-                              <select
-                                className="table-select-clean"
-                                value={role.roleId}
-                                onChange={(e) => handleRoleChange(role.id, e.target.value)}
-                              >
-                                <option value="">Choosing a role...</option>
-                                <option value="1">Admin</option>
-                                <option value="2">Receptionist</option>
-                              </select>
-                            </td>
-                            <td style={{ textAlign: 'center' }}>
-                              <button className="btn-remove-row" onClick={() => removeRoleRow(role.id)}>×</button>
-                            </td>
-                          </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
-                </div>
+        <h3 style={{ fontSize: '1.4rem', color: '#1E293B', marginTop: '6rem', marginBottom: '3.5rem', fontWeight: '900', borderBottom: '2px solid #F1F5F9', paddingBottom: '1.5rem', letterSpacing: '-0.01em' }}>VALIDATION & <span style={{ color: '#0D9488' }}>SIGNATURES</span></h3>
+        <div style={{ maxWidth: '700px' }}>
+          <div className="form-group-row" style={{ alignItems: 'flex-start' }}>
+            <label>DIGITAL ASSETS:</label>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', flex: 1 }}>
+              <button className="btn-secondary" style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', borderStyle: 'dashed', borderWidth: '2.5px', padding: '1.75rem', borderRadius: '20px', fontSize: '0.95rem', fontWeight: '900' }}>
+                <Plus size={24} /> UPLOAD VERIFIED BIOMETRIC SIGNATURE / STAMP
+              </button>
+              <div style={{ display: 'flex', gap: '3.5rem' }}>
+                <label className="checkbox-standard">
+                  <input type="checkbox" name="printSignature" checked={formData.printSignature} onChange={handleInputChange} className="custom-checkbox" /> PRINT SIGNATURE
+                </label>
+                <label className="checkbox-standard">
+                  <input type="checkbox" name="printStamp" checked={formData.printStamp} onChange={handleInputChange} className="custom-checkbox" /> PRINT STAMP
+                </label>
               </div>
             </div>
           </div>
         </div>
-      )}
+      </div>
 
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3.5rem', marginBottom: '6rem' }}>
+        <div className="card" style={{ padding: '2.5rem', border: '1px solid #E2E8F0', borderRadius: '32px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.05)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem' }}>
+            <h3 style={{ fontSize: '1.25rem', color: '#1E293B', margin: 0, fontWeight: '900', letterSpacing: '-0.01em' }}>ASSOCIATED <span style={{ color: '#0D9488' }}>PRACTITIONERS</span></h3>
+            <button className="btn-primary" style={{ height: '40px', padding: '0 1.25rem', fontSize: '0.8rem', fontWeight: '900', borderRadius: '100px' }} onClick={addDoctorRow}>
+              <Plus size={18} /> LINK DOCTOR
+            </button>
+          </div>
+          <div className="maint-table-container">
+            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <thead>
+                <tr style={{ backgroundColor: '#0B3B3C', color: 'white' }}>
+                  <th style={{ padding: '1.25rem', textAlign: 'left', fontSize: '0.85rem', fontWeight: '800', letterSpacing: '0.05em' }}>DOCTOR IDENTITY</th>
+                  <th style={{ padding: '1.25rem', textAlign: 'center', fontSize: '0.85rem', width: '120px', fontWeight: '800', letterSpacing: '0.05em' }}>REVOKE</th>
+                </tr>
+              </thead>
+              <tbody>
+                {linkedDoctors.length === 0 ? (
+                  <tr>
+                    <td colSpan="2" style={{ padding: '5rem 1.25rem', textAlign: 'center', color: '#94A3B8', fontSize: '1rem', fontWeight: '600' }}>No practitioners currently associated.</td>
+                  </tr>
+                ) : (
+                  linkedDoctors.map(doctor => (
+                    <tr key={doctor.id} style={{ borderBottom: '1px solid #F1F5F9' }} className="table-row-hover">
+                      <td style={{ padding: '1.25rem' }}>
+                        <select className="custom-select" value={doctor.doctorId} onChange={(e) => handleDoctorChange(doctor.id, e.target.value)} style={{ width: '100%', border: 'none', background: 'transparent', fontWeight: '900', fontSize: '1.05rem', color: '#1E293B' }}>
+                          <option value="">Choosing a doctor...</option>
+                          <option value="1">Dr. Juan Perez</option>
+                          <option value="2">Dra. Maria Garcia</option>
+                        </select>
+                      </td>
+                      <td style={{ padding: '1.25rem', textAlign: 'center' }}>
+                        <button style={{ background: 'none', border: '1.5px solid #F1F5F9', color: '#EF4444', cursor: 'pointer', padding: '0.5rem', borderRadius: '10px' }} onClick={() => removeDoctorRow(doctor.id)} className="action-btn-danger">
+                          <X size={20} />
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div className="card" style={{ padding: '2.5rem', border: '1px solid #E2E8F0', borderRadius: '32px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.05)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem' }}>
+            <h3 style={{ fontSize: '1.25rem', color: '#1E293B', margin: 0, fontWeight: '900', letterSpacing: '-0.01em' }}>ASSIGNED <span style={{ color: '#0D9488' }}>ROLES</span></h3>
+            <button className="btn-primary" style={{ height: '40px', padding: '0 1.25rem', fontSize: '0.8rem', fontWeight: '900', borderRadius: '100px' }} onClick={addRoleRow}>
+              <Plus size={18} /> ADD ROLE
+            </button>
+          </div>
+          <div className="maint-table-container">
+            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <thead>
+                <tr style={{ backgroundColor: '#0B3B3C', color: 'white' }}>
+                  <th style={{ padding: '1.25rem', textAlign: 'left', fontSize: '0.85rem', fontWeight: '800', letterSpacing: '0.05em' }}>ROLE IDENTITY</th>
+                  <th style={{ padding: '1.25rem', textAlign: 'center', fontSize: '0.85rem', width: '120px', fontWeight: '800', letterSpacing: '0.05em' }}>REVOKE</th>
+                </tr>
+              </thead>
+              <tbody>
+                {assignedRoles.length === 0 ? (
+                  <tr>
+                    <td colSpan="2" style={{ padding: '5rem 1.25rem', textAlign: 'center', color: '#94A3B8', fontSize: '1rem', fontWeight: '600' }}>No administrative roles assigned.</td>
+                  </tr>
+                ) : (
+                  assignedRoles.map(role => (
+                    <tr key={role.id} style={{ borderBottom: '1px solid #F1F5F9' }} className="table-row-hover">
+                      <td style={{ padding: '1.25rem' }}>
+                        <select className="custom-select" value={role.roleId} onChange={(e) => handleRoleChange(role.id, e.target.value)} style={{ width: '100%', border: 'none', background: 'transparent', fontWeight: '900', fontSize: '1.05rem', color: '#1E293B' }}>
+                          <option value="">Choosing a role...</option>
+                          <option value="1">System Administrator</option>
+                          <option value="2">Clinical Receptionist</option>
+                        </select>
+                      </td>
+                      <td style={{ padding: '1.25rem', textAlign: 'center' }}>
+                        <button style={{ background: 'none', border: '1.5px solid #F1F5F9', color: '#EF4444', cursor: 'pointer', padding: '0.5rem', borderRadius: '10px' }} onClick={() => removeRoleRow(role.id)} className="action-btn-danger">
+                          <X size={20} />
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <DashboardLayout>
+      {view === 'list' ? renderListView() : renderMaintenanceView()}
       <style>{`
-        .breadcrumb-sub { font-size: 0.8rem; color: #666; display: flex; align-items: center; gap: 0.5rem; margin-top: 0.3rem; }
-        .maint-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem; border-bottom: 1.5px solid #F28C28; padding-bottom: 0.8rem; flex-wrap: wrap; gap: 1rem; }
-        .btn-upload-text { background: none; border: none; color: #F28C28; font-weight: 700; font-size: 0.95rem; cursor: pointer; text-transform: uppercase; display: flex; align-items: center; gap: 0.4rem; padding: 0.4rem; transition: opacity 0.2s; }
-        .btn-upload-text:hover { opacity: 0.8; }
-        .maint-title { font-size: 1.5rem; color: #1F2937; margin: 0; font-weight: 600; }
-        .maint-subtitle { font-size: 0.85rem; color: #6B7280; }
-        .maint-actions { display: flex; gap: 1.2rem; align-items: center; flex-wrap: wrap; }
-        .maint-btn-text { background: none; border: none; color: #F28C28; font-weight: 700; font-size: 0.75rem; cursor: pointer; text-transform: uppercase; display: flex; align-items: center; gap: 0.4rem; padding: 0.4rem; transition: opacity 0.2s; }
-        .maint-btn-text:hover { opacity: 0.8; }
-        .maint-btn-primary { background-color: #F28C28; border: none; color: white; font-weight: 700; font-size: 0.75rem; padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; text-transform: uppercase; display: flex; align-items: center; gap: 0.4rem; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
-        .maint-form-content { max-width: 900px; }
-        .form-row { display: flex; margin-bottom: 1.2rem; align-items: center; min-height: 40px; }
-        .form-row label { width: 220px; text-align: right; padding-right: 2rem; font-size: 0.85rem; font-weight: 700; color: #374151; }
-        .form-row label.required-label { color: #DC2626; }
-        .input-col { flex: 1; display: flex; align-items: center; }
-        .maint-input, .maint-select { width: 100%; border: 1px solid #D1D5DB; padding: 0.5rem 0.8rem; border-radius: 4px; font-size: 0.9rem; outline: none; transition: border-color 0.2s; }
-        .maint-input:focus, .maint-select:focus { border-color: #F28C28; }
-        .maint-input.disabled { background-color: #F9FAFB; border-color: #E5E7EB; color: #9CA3AF; cursor: not-allowed; }
-        .split-inputs { gap: 1rem; }
-        .horizontal-group { gap: 2rem; }
-        .btn-view-add { background-color: #F8A359; color: white; border: none; padding: 0.4rem 1.2rem; border-radius: 4px; font-size: 0.75rem; font-weight: 700; cursor: pointer; text-transform: uppercase; }
-        .checkbox-group { display: flex; gap: 1.5rem; }
-        .checkbox-group label { width: auto; font-weight: 600; font-size: 0.8rem; display: flex; align-items: center; gap: 0.5rem; cursor: pointer; }
-        .sub-sections-container { margin-top: 3rem; display: grid; gap: 2.5rem; }
-        .section-header-bar { background-color: #0B3B3C; color: white; padding: 0.6rem 1.2rem; display: flex; justify-content: space-between; align-items: center; border-radius: 4px 4px 0 0; font-weight: 700; font-size: 0.9rem; }
-        .btn-add-section { background-color: #F8A359; border: none; color: white; font-size: 0.7rem; font-weight: 800; padding: 0.3rem 0.8rem; border-radius: 2px; cursor: pointer; transition: background 0.2s; }
-        .btn-add-section:hover { background-color: #f28c28; }
-        .section-content-table { border: 1px solid #E5E7EB; border-top: none; border-radius: 0 0 4px 4px; overflow: hidden; }
-        .maint-inner-table { width: 100%; border-collapse: collapse; background-color: white; }
-        .maint-inner-table th { background-color: #F9FAFB; border-bottom: 2px solid #E5E7EB; padding: 0.8rem 1.2rem; text-align: left; font-size: 0.75rem; color: #4B5563; text-transform: uppercase; letter-spacing: 0.025em; }
-        .maint-inner-table td { padding: 0.6rem 1.2rem; border-bottom: 1px solid #F1F5F9; }
-        .empty-table-msg { text-align: center; color: #9CA3AF; padding: 2.5rem !important; font-size: 0.95rem; font-style: italic; }
-        .table-select-clean { width: 100%; border: none; background: none; font-size: 0.9rem; color: #4B5563; padding: 0.4rem 0; outline: none; }
-        .btn-remove-row { background: none; border: none; color: #EF4444; font-size: 1.5rem; cursor: pointer; line-height: 1; padding: 0 0.5rem; transition: transform 0.1s; }
-        .btn-remove-row:hover { transform: scale(1.2); }
-        @media (max-width: 768px) {
-          .form-row { flex-direction: column; align-items: flex-start; gap: 0.4rem; height: auto; }
-          .form-row label { width: 100%; text-align: left; padding-right: 0; }
-          .horizontal-group { flex-direction: column; align-items: flex-start; gap: 1rem; width: 100%; }
-          .split-inputs { flex-direction: column; width: 100%; }
+        .form-group-row { display: flex; align-items: center; gap: 2.5rem; min-height: 56px; }
+        .form-group-row label { width: 280px; text-align: right; font-size: 0.85rem; font-weight: 900; color: #64748B; letter-spacing: 0.1em; }
+        .form-group-row label.required:after { content: '*'; color: #0D9488; margin-left: 8px; }
+        
+        .custom-input, .custom-select { flex: 1; padding: 0.85rem 1.5rem; border: 1.5px solid #E2E8F0; border-radius: 14px; font-size: 1rem; font-weight: 900; color: #1E293B; outline: none; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+        .custom-input:focus, .custom-select:focus { border-color: #0D9488; box-shadow: 0 0 0 5px rgba(13, 148, 136, 0.1); transform: translateY(-1px); }
+        .custom-input::placeholder { color: #CBD5E1; font-weight: 500; }
+        
+        .checkbox-standard { display: flex; align-items: center; gap: 0.85rem; cursor: pointer; font-size: 0.95rem; color: #475569; font-weight: 900; }
+        .checkbox-active { display: flex; align-items: center; gap: 0.85rem; cursor: pointer; font-size: 0.95rem; color: #0D9488; font-weight: 900; }
+        .custom-checkbox { width: 22px; height: 22px; accent-color: #0D9488; border-radius: 6px; }
+        
+        .table-row-hover:hover { background-color: #F0FDFA !important; }
+        .action-btn:hover { color: #0D9488 !important; border-color: #0D9488 !important; background-color: #F0FDFA !important; transform: scale(1.1); }
+        .action-btn-danger:hover { color: #EF4444 !important; border-color: #EF4444 !important; background-color: #FEF2F2 !important; transform: scale(1.1); }
+        .back-link:hover { transform: translateX(-5px); color: #0D9488 !important; border-color: #0D9488 !important; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        
+        @media (max-width: 1024px) {
+          .form-group-row { flex-direction: column; align-items: flex-start; gap: 0.75rem; }
+          .form-group-row label { width: 100%; text-align: left; }
+          .maintenance-container { padding: 0 1.5rem; }
         }
       `}</style>
     </DashboardLayout>

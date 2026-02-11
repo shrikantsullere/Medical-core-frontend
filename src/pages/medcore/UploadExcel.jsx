@@ -45,170 +45,228 @@ const UploadExcel = () => {
 
   return (
     <DashboardLayout>
-      <div className="branch-header" style={{ padding: '1rem 2rem' }}>
-        <h1 className="main-title">Bulk Data Import</h1>
-        <div className="breadcrumb" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#555', fontSize: '0.9rem' }}>
-          <FileSpreadsheet size={16} />
-          <span>Import Management / Excel Upload</span>
+      <div className="upload-excel-page" style={{ padding: '2rem', animation: 'fadeIn 0.4s ease-out', maxWidth: '1200px', margin: '0 auto' }}>
+        <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem', flexWrap: 'wrap', gap: '1.5rem' }}>
+          <div>
+            <h2 className="page-title" style={{ margin: 0, fontSize: '1.75rem', fontWeight: '800', color: 'var(--text-main)', letterSpacing: '-0.025em' }}>Intelligence <span style={{ color: 'var(--primary)' }}>Synchronization</span></h2>
+            <p style={{ color: 'var(--text-muted)', margin: '0.4rem 0 0', fontSize: '0.95rem', fontWeight: '500' }}>Streamline clinical database management.</p>
+          </div>
+          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+            <button className="btn-secondary" onClick={() => window.history.back()}>
+              <X size={18} /> ABORT
+            </button>
+          </div>
         </div>
-        <div className="orange-divider" style={{ width: '100%', height: '1px', backgroundColor: '#F28C28', marginTop: '1rem' }}></div>
-      </div>
 
-      <div className="card-container" style={{ padding: '0 2rem 3rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '2rem' }}>
-        {/* Upload Card */}
-        <div className="branch-card" style={{ textAlign: 'center', padding: '3rem' }}>
-          {uploadStatus === 'success' ? (
-            <div className="success-view bounce-in">
-              <div style={{ width: '80px', height: '80px', backgroundColor: '#ECFDF5', color: '#10B981', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem' }}>
-                <CheckCircle2 size={40} />
-              </div>
-              <h2 style={{ fontSize: '1.5rem', fontWeight: '700', color: '#0B3B3C', marginBottom: '0.5rem' }}>Import Complete!</h2>
-              <p style={{ color: '#6B7280', marginBottom: '2rem' }}>Your file <strong>{file?.name}</strong> has been successfully processed.</p>
-
-              <div style={{ backgroundColor: '#F9FAFB', borderRadius: '8px', padding: '1.2rem', textAlign: 'left', marginBottom: '2rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                  <span style={{ fontSize: '0.9rem', color: '#4B5563' }}>Records Processed:</span>
-                  <span style={{ fontWeight: '700', color: '#0B3B3C' }}>142</span>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '2rem' }}>
+          {/* Main Upload Card */}
+          <div className="card" style={{ padding: '2.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+            {uploadStatus === 'success' ? (
+              <div className="success-state" style={{ animation: 'modalSlideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1)', width: '100%' }}>
+                <div style={{ width: '80px', height: '80px', backgroundColor: 'var(--primary-light)', color: 'var(--primary)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 2rem', border: '4px solid white', boxShadow: 'var(--shadow-md)' }}>
+                  <CheckCircle2 size={40} />
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ fontSize: '0.9rem', color: '#4B5563' }}>Errors Found:</span>
-                  <span style={{ fontWeight: '700', color: '#10B981' }}>0</span>
-                </div>
-              </div>
+                <h2 style={{ fontSize: '1.5rem', fontWeight: '800', color: 'var(--text-main)', marginBottom: '0.5rem' }}>Synchronization Complete</h2>
+                <p style={{ color: 'var(--text-muted)', marginBottom: '2rem', fontSize: '1rem' }}><strong>{file?.name}</strong> successfully integrated.</p>
 
-              <button className="btn-add-orange" style={{ width: '100%', justifyContent: 'center' }} onClick={resetUpload}>
-                UPLOAD ANOTHER FILE
-              </button>
-            </div>
-          ) : (
-            <>
-              <div style={{ width: '80px', height: '80px', backgroundColor: uploadStatus === 'uploading' ? '#EFF6FF' : '#FFF7ED', color: uploadStatus === 'uploading' ? '#3B82F6' : '#F28C28', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem' }}>
-                {uploadStatus === 'uploading' ? <RotateCcw className="spinning" size={32} /> : <Upload size={32} />}
-              </div>
-              <h2 style={{ fontSize: '1.4rem', fontWeight: '700', color: '#0B3B3C', marginBottom: '0.5rem' }}>
-                {uploadStatus === 'uploading' ? 'Importing Data...' : 'Upload Excel File'}
-              </h2>
-              <p style={{ color: '#6B7280', marginBottom: '2.5rem', fontSize: '0.95rem' }}>
-                Quickly add multiple records to your database.
-              </p>
-
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleFileChange}
-                accept=".xlsx, .csv"
-                style={{ display: 'none' }}
-              />
-
-              {!file ? (
-                <div
-                  onClick={handleUploadClick}
-                  className="upload-dropzone"
-                  style={{ border: '2px dashed #D1D5DB', borderRadius: '12px', padding: '3rem 2rem', backgroundColor: '#F9FAFB', marginBottom: '2.5rem', cursor: 'pointer', transition: 'all 0.3s', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
-                >
-                  <FileSpreadsheet size={50} style={{ marginBottom: '1rem', color: '#9CA3AF' }} />
-                  <span style={{ color: '#374151', fontWeight: '700', fontSize: '1rem' }}>Click or Drag File Here</span>
-                  <span style={{ color: '#9CA3AF', fontSize: '0.8rem', marginTop: '0.5rem' }}>Supports .xlsx, .xls and .csv</span>
-                </div>
-              ) : (
-                <div style={{ border: '1px solid #E5E7EB', borderRadius: '8px', padding: '1.5rem', backgroundColor: '#FDFCFB', marginBottom: '2.5rem', position: 'relative' }}>
-                  {uploadStatus === 'idle' && (
-                    <button onClick={resetUpload} style={{ position: 'absolute', top: '10px', right: '10px', border: 'none', background: 'none', cursor: 'pointer', color: '#9CA3AF' }}>
-                      <X size={18} />
-                    </button>
-                  )}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: uploadStatus === 'uploading' ? '1rem' : '0' }}>
-                    <div style={{ width: '45px', height: '45px', backgroundColor: '#F28C28', color: 'white', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <FileCheck size={24} />
-                    </div>
-                    <div style={{ textAlign: 'left' }}>
-                      <p style={{ fontSize: '0.95rem', fontWeight: '700', color: '#0B3B3C', margin: 0, wordBreak: 'break-all' }}>{file.name}</p>
-                      <p style={{ fontSize: '0.8rem', color: '#6B7280', margin: 0 }}>{(file.size / 1024).toFixed(2)} KB</p>
-                    </div>
+                <div style={{ backgroundColor: 'var(--bg-main)', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', padding: '1.5rem', textAlign: 'left', marginBottom: '2rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+                    <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: '700' }}>RECORDS COMMITTED</span>
+                    <span style={{ fontWeight: '800', color: 'var(--primary)', fontSize: '1rem' }}>142</span>
                   </div>
-
-                  {uploadStatus === 'uploading' && (
-                    <div style={{ width: '100%', height: '8px', backgroundColor: '#E5E7EB', borderRadius: '4px', overflow: 'hidden' }}>
-                      <div style={{ width: `${progress}%`, height: '100%', backgroundColor: '#F28C28', transition: 'width 0.3s' }}></div>
-                    </div>
-                  )}
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: '700' }}>With Errors</span>
+                    <span style={{ fontWeight: '800', color: 'var(--text-main)', fontSize: '1rem' }}>0</span>
+                  </div>
                 </div>
-              )}
 
-              <button
-                className="btn-add-orange"
-                style={{ width: '100%', justifyContent: 'center', height: '50px', opacity: !file || uploadStatus === 'uploading' ? 0.6 : 1, cursor: !file || uploadStatus === 'uploading' ? 'not-allowed' : 'pointer' }}
-                onClick={startImport}
-                disabled={!file || uploadStatus === 'uploading'}
-              >
-                {uploadStatus === 'uploading' ? 'PROCESSING...' : (
-                  <>
-                    <Check size={20} /> START IMPORT PROCESS
-                  </>
+                <button className="btn-primary btn-lg" style={{ width: '100%' }} onClick={resetUpload}>
+                  INITIALIZE NEW UPLOAD
+                </button>
+              </div>
+            ) : (
+              <div style={{ width: '100%' }}>
+                <div style={{ width: '70px', height: '70px', backgroundColor: 'var(--bg-main)', color: 'var(--text-secondary)', borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem', border: '1px solid var(--border)' }}>
+                  {uploadStatus === 'uploading' ? <RotateCcw size={28} className="spinning" /> : <Upload size={28} />}
+                </div>
+                <h2 style={{ fontSize: '1.4rem', fontWeight: '800', color: 'var(--text-main)', marginBottom: '0.5rem' }}>
+                  {uploadStatus === 'uploading' ? 'Analyzing Dataset...' : 'Select Source Material'}
+                </h2>
+                <p style={{ color: 'var(--text-muted)', marginBottom: '2rem', fontSize: '0.95rem' }}>Select a structured Excel or CSV schema.</p>
+
+                <input type="file" ref={fileInputRef} onChange={handleFileChange} accept=".xlsx, .csv" style={{ display: 'none' }} />
+
+                {!file ? (
+                  <div onClick={handleUploadClick} style={{ border: '2px dashed var(--border)', borderRadius: 'var(--radius-lg)', padding: '3rem 1.5rem', backgroundColor: 'var(--bg-main)', marginBottom: '2rem', cursor: 'pointer', transition: 'all 0.2s ease', display: 'flex', flexDirection: 'column', alignItems: 'center' }} className="hover-upload-zone">
+                    <FileSpreadsheet size={48} style={{ marginBottom: '1rem', color: 'var(--text-muted)' }} className="icon-pulse" />
+                    <span style={{ color: 'var(--text-main)', fontWeight: '700', fontSize: '1.1rem' }}>Click to Browse Repository</span>
+                    <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginTop: '0.5rem' }}>Supports .XLSX, .CSV</span>
+                  </div>
+                ) : (
+                  <div style={{ border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', padding: '1.25rem', backgroundColor: 'white', marginBottom: '2rem', position: 'relative', boxShadow: 'var(--shadow-sm)' }}>
+                    {uploadStatus === 'idle' && (
+                      <button onClick={resetUpload} style={{ position: 'absolute', top: '12px', right: '12px', border: 'none', background: 'var(--bg-main)', width: '28px', height: '28px', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--text-muted)' }} className="hover-scale">
+                        <X size={16} />
+                      </button>
+                    )}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: uploadStatus === 'uploading' ? '1.5rem' : '0' }}>
+                      <div style={{ width: '48px', height: '48px', backgroundColor: 'var(--primary-light)', color: 'var(--primary)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                        <FileCheck size={24} />
+                      </div>
+                      <div style={{ textAlign: 'left', minWidth: 0 }}>
+                        <p style={{ fontSize: '1rem', fontWeight: '700', color: 'var(--text-main)', margin: 0, wordBreak: 'break-all' }}>{file.name}</p>
+                        <p style={{ fontSize: '0.75rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--primary)', marginTop: '0.2rem' }}>{(file.size / 1024).toFixed(2)} KB • VALIDATED</p>
+                      </div>
+                    </div>
+
+                    {uploadStatus === 'uploading' && (
+                      <div style={{ width: '100%', height: '8px', backgroundColor: 'var(--bg-main)', borderRadius: '100px', overflow: 'hidden' }}>
+                        <div style={{ width: `${progress}%`, height: '100%', backgroundColor: 'var(--primary)', transition: 'width 0.4s ease', borderRadius: '100px' }}></div>
+                      </div>
+                    )}
+                  </div>
                 )}
-              </button>
-            </>
-          )}
-        </div>
 
-        {/* Info Card */}
-        <div className="branch-card" style={{ padding: '3rem' }}>
-          <h2 style={{ fontSize: '1.4rem', fontWeight: '700', color: '#0B3B3C', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-            <AlertCircle color="#F28C28" /> Guidelines
-          </h2>
-
-          <div className="guide-steps" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', fontSize: '1rem', color: '#4B5563', marginBottom: '3rem' }}>
-            <div style={{ display: 'flex', gap: '1rem' }}>
-              <div className="step-num">1</div>
-              <div>
-                <strong style={{ display: 'block', color: '#0B3B3C' }}>Select Category</strong>
-                <p style={{ margin: '0.3rem 0', fontSize: '0.9rem' }}>Choose the type of data you want to import to download the correct template.</p>
+                <button
+                  className="btn-primary"
+                  style={{ width: '100%', height: '52px', fontSize: '1rem', fontWeight: '800', pointerEvents: !file || uploadStatus === 'uploading' ? 'none' : 'auto', opacity: !file || uploadStatus === 'uploading' ? 0.5 : 1 }}
+                  onClick={startImport}
+                  disabled={!file || uploadStatus === 'uploading'}
+                >
+                  {uploadStatus === 'uploading' ? 'PROCESSING...' : 'EXECUTE SYNCHRONIZATION'}
+                </button>
               </div>
-            </div>
-            <div style={{ display: 'flex', gap: '1rem' }}>
-              <div className="step-num">2</div>
-              <div>
-                <strong style={{ display: 'block', color: '#0B3B3C' }}>Fill the Template</strong>
-                <p style={{ margin: '0.3rem 0', fontSize: '0.9rem' }}>Required fields are marked in the header. Do not change the column order.</p>
-              </div>
-            </div>
-            <div style={{ display: 'flex', gap: '1rem' }}>
-              <div className="step-num">3</div>
-              <div>
-                <strong style={{ display: 'block', color: '#0B3B3C' }}>Verify & Upload</strong>
-                <p style={{ margin: '0.3rem 0', fontSize: '0.9rem' }}>Upload the saved file and wait for our system to validate the entries.</p>
-              </div>
-            </div>
+            )}
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <h3 style={{ fontSize: '1rem', fontWeight: '700', color: '#0B3B3C', marginBottom: '0.5rem' }}>Download Templates</h3>
-            <button className="template-btn">
-              <Download size={18} /> Doctor Import Template
-            </button>
-            <button className="template-btn">
-              <Download size={18} /> Patient Import Template
-            </button>
-            <button className="template-btn">
-              <Download size={18} /> Branch Import Template
-            </button>
+          {/* Guidelines and Templates Card */}
+          <div className="card" style={{ padding: '2.5rem' }}>
+            <h3 style={{ fontSize: '1.2rem', fontWeight: '800', color: 'var(--text-main)', marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <div style={{ backgroundColor: 'var(--bg-main)', padding: '0.5rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)' }}><AlertCircle size={20} color="var(--primary)" /></div>
+              Operational Guidelines
+            </h3>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', marginBottom: '3rem' }}>
+              <div style={{ display: 'flex', gap: '1rem' }}>
+                <div style={{ width: '28px', height: '28px', backgroundColor: 'var(--primary-dark)', color: 'white', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem', fontWeight: '700', flexShrink: 0 }}>01</div>
+                <div>
+                  <h4 style={{ margin: '0 0 0.25rem', fontSize: '1rem', color: 'var(--text-main)', fontWeight: '700' }}>Prepare Schema</h4>
+                  <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--text-muted)', lineHeight: '1.5' }}>Acquire standard templates to ensure headers synchronize with system architecture.</p>
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: '1rem' }}>
+                <div style={{ width: '28px', height: '28px', backgroundColor: 'var(--primary-dark)', color: 'white', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem', fontWeight: '700', flexShrink: 0 }}>02</div>
+                <div>
+                  <h4 style={{ margin: '0 0 0.25rem', fontSize: '1rem', color: 'var(--text-main)', fontWeight: '700' }}>Protocol Validation</h4>
+                  <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--text-muted)', lineHeight: '1.5' }}>Incorporate all mandatory clinical metadata. Our engine validates entry schemas.</p>
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: '1rem' }}>
+                <div style={{ width: '28px', height: '28px', backgroundColor: 'var(--primary-dark)', color: 'white', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem', fontWeight: '700', flexShrink: 0 }}>03</div>
+                <div>
+                  <h4 style={{ margin: '0 0 0.25rem', fontSize: '1rem', color: 'var(--text-main)', fontWeight: '700' }}>Batch Integration</h4>
+                  <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--text-muted)', lineHeight: '1.5' }}>Initiate the finalized dataset synchronization. Validated records are indexed.</p>
+                </div>
+              </div>
+            </div>
+
+            <h4 style={{ fontSize: '0.75rem', fontWeight: '800', color: 'var(--text-muted)', marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Standard Architectural Templates</h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', padding: '1.5rem', backgroundColor: 'var(--bg-main)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--border)' }}>
+              <button className="template-row"><Download size={18} /> PERSONNEL MASTER SCHEMA</button>
+              <button className="template-row"><Download size={18} /> PATIENT IDENTITY LEDGER</button>
+              <button className="template-row"><Download size={18} /> INFRASTRUCTURE TOPOLOGY</button>
+            </div>
           </div>
         </div>
       </div>
 
       <style>{`
-        .main-title { font-size: 2.2rem; color: #333; font-weight: 500; margin-bottom: 0.5rem; }
-        .branch-card { background-color: white; border-radius: 8px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); }
-        .upload-dropzone:hover { border-color: #F28C28 !important; background-color: #FFF7ED !important; }
-        .btn-add-orange { background-color: #F28C28; color: white; border: none; padding: 0.8rem 1.8rem; border-radius: 4px; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; cursor: pointer; text-transform: uppercase; font-size: 0.95rem; }
-        .btn-add-orange:hover:not(:disabled) { background-color: #e07b1c; transform: translateY(-1px); }
-        .step-num { width: 28px; height: 28px; background-color: #0B3B3C; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; flex-shrink: 0; }
-        .template-btn { width: 100%; text-align: left; background-color: #F9FAFB; border: 1px solid #E5E7EB; color: #374151; padding: 1rem; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 1rem; transition: background 0.2s; }
-        .template-btn:hover { background-color: #F3F4F6; }
+        .hover-upload-zone:hover { border-color: var(--primary) !important; background-color: var(--primary-light) !important; }
+        .hover-upload-zone:hover .icon-pulse { transform: scale(1.1) rotate(5deg); color: var(--primary) !important; }
+        .template-row { width: 100%; display: flex; align-items: center; gap: 1rem; padding: 0.75rem 1rem; background-color: white; border: 1px solid var(--border); border-radius: var(--radius-md); font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); cursor: pointer; transition: all 0.2s ease; }
+        .template-row:hover { border-color: var(--primary); color: var(--primary); transform: translateX(4px); background-color: var(--primary-light); }
         .spinning { animation: spin 2s linear infinite; }
+        .hover-scale:hover { transform: scale(1.1); }
+        .icon-pulse { transition: all 0.4s ease; }
         @keyframes spin { 100% { transform: rotate(-360deg); } }
-        .bounce-in { animation: bounceIn 0.8s ease; }
-        @keyframes bounceIn { 0% { opacity: 0; transform: scale(0.3); } 50% { opacity: 1; transform: scale(1.05); } 70% { transform: scale(0.9); } 100% { transform: scale(1); } }
+        @keyframes modalSlideUp { from { opacity: 0; transform: translateY(50px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        
+        @media (max-width: 768px) {
+          .upload-excel-page { 
+            padding: 1rem !important; 
+            overflow-x: hidden !important; 
+            width: 100% !important; 
+            max-width: 100vw !important;
+            margin: 0 !important;
+          }
+          
+          /* Force grid to single column and control spacing */
+          div[style*="gridTemplateColumns"] { 
+            grid-template-columns: 1fr !important; 
+            gap: 1.5rem !important;
+            width: 100% !important;
+            margin: 0 !important;
+          }
+          
+          /* Header Adjustments */
+          .page-header { 
+            flex-direction: column !important; 
+            align-items: center !important; 
+            gap: 1rem !important; 
+            margin-bottom: 2rem !important; 
+            text-align: center;
+            width: 100% !important;
+          }
+          .page-header > div { width: 100% !important; }
+          
+          /* Typography Resizing */
+          .page-title { fontSize: 1.5rem !important; line-height: 1.2; }
+          
+          /* Card Adjustments */
+          .card { 
+            padding: 1.5rem !important; 
+            border-radius: var(--radius-lg) !important;
+            width: 100% !important;
+            margin: 0 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important; /* Center content */
+          }
+          
+          /* Upload Zone Adjustments - Center everything */
+          .hover-upload-zone { 
+            padding: 3rem 1rem !important; 
+            width: 100% !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            text-align: center !important;
+          }
+          
+          /* Ensure buttons and inputs don't overflow */
+          .btn-secondary, .btn-primary, .custom-input, select, .template-row { 
+            width: 100% !important; 
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+          }
+          
+          /* Template Row Adjustments */
+          .template-row { 
+            padding: 0.9rem !important; 
+            font-size: 0.85rem !important;
+            flex-direction: row !important; /* Keep side-by-side if possible */
+            justify-content: flex-start !important;
+            text-align: left !important;
+          }
+
+          /* Global Safety for this page */
+          * { 
+            max-width: 100% !important; 
+            box-sizing: border-box !important; 
+          }
+        }
       `}</style>
     </DashboardLayout>
   );

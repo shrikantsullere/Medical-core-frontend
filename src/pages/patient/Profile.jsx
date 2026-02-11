@@ -49,7 +49,7 @@ const Profile = () => {
           <div className="fade-in">
             <div className="card" style={{ marginBottom: '1.5rem', backgroundColor: 'var(--bg-sidebar)' }}>
               <h3 style={{ marginBottom: '1.5rem', fontSize: '1.1rem', color: 'var(--heading)' }}>Información Personal</h3>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+              <div className="grid-responsive">
                 <div style={{ gridColumn: 'span 2' }}>
                   <label style={labelStyle}>Nombre Completo</label>
                   <input type="text" defaultValue="Deepak Verma" style={inputStyle} />

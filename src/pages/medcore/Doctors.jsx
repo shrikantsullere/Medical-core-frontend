@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../../components/medcore/DashboardLayout';
 import { Search, UserPlus, Download, RotateCcw, Check, ArrowLeft, Plus, FileText, FileSpreadsheet } from 'lucide-react';
 
 const Doctors = () => {
+  const navigate = useNavigate();
   const [view, setView] = useState('list'); // 'list' or 'maintenance'
   const [activeTab, setActiveTab] = useState('General Profile');
   const [ncfTab, setNcfTab] = useState('NCF Types');
   const [ncfView, setNcfView] = useState('list');
+  const [searchTerm, setSearchTerm] = useState('');
 
   const tabs = ['General Profile', 'Time', 'NCF'];
 
@@ -28,11 +31,11 @@ const Doctors = () => {
     specialty: '',
     defaultFees: '',
     visitDuration: 'Importar de centro medico',
-    colorInAgenda: '',
+    colorInAgenda: '#0D9488',
     idUniversal: '',
     printSignature: false,
     printStamp: false,
-    asset: false
+    asset: true
   });
 
   const handleInputChange = (e) => {
@@ -44,213 +47,177 @@ const Doctors = () => {
   };
 
   const renderGeneralProfile = () => (
-    <div style={{ flex: 1 }}>
-      <div className="form-grid" style={{ display: 'grid', gap: '1rem' }}>
-        <div className="form-row">
-          <label className="required">Name:</label>
-          <input type="text" name="name" className="maint-input" value={formData.name} onChange={handleInputChange} placeholder="Enter Name" />
-        </div>
+    <div style={{ flex: 1, animation: 'fadeIn 0.4s ease-out' }}>
+      <div className="card" style={{ padding: '2.5rem', marginBottom: '2rem' }}>
+        <h3 style={{ fontSize: '1.25rem', color: '#1E293B', marginBottom: '2.5rem', fontWeight: '800', borderBottom: '2px solid #F1F5F9', paddingBottom: '1rem', letterSpacing: '-0.02em' }}>
+          PRIMARY <span style={{ color: '#0D9488' }}>PRACTITIONER DATA</span>
+        </h3>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '3rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            <div className="form-group-row">
+              <label className="required">LEGAL NAME:</label>
+              <input type="text" name="name" className="custom-input" value={formData.name} onChange={handleInputChange} placeholder="First Name" style={{ width: '100%' }} />
+            </div>
+            <div className="form-group-row">
+              <label className="required">SURNAME:</label>
+              <input type="text" name="lastName" className="custom-input" value={formData.lastName} onChange={handleInputChange} placeholder="Last Name" style={{ width: '100%' }} />
+            </div>
+            <div className="form-group-row">
+              <label className="required">BIOLOGICAL GENRE:</label>
+              <div style={{ display: 'flex', gap: '2rem' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer', fontSize: '0.85rem', color: '#475569', fontWeight: '700' }}>
+                  <input type="radio" name="genre" value="Masculine" checked={formData.genre === 'Masculine'} onChange={handleInputChange} style={{ width: '18px', height: '18px', accentColor: '#0D9488' }} /> MASCULINE
+                </label>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer', fontSize: '0.85rem', color: '#475569', fontWeight: '700' }}>
+                  <input type="radio" name="genre" value="Female" checked={formData.genre === 'Female'} onChange={handleInputChange} style={{ width: '18px', height: '18px', accentColor: '#0D9488' }} /> FEMALE
+                </label>
+              </div>
+            </div>
+            <div className="form-group-row">
+              <label>DATE OF BIRTH:</label>
+              <input type="date" name="birthdate" className="custom-input" value={formData.birthdate} onChange={handleInputChange} style={{ width: '100%' }} />
+            </div>
+            <div className="form-group-row">
+              <label>GOV IDENTIFICATION:</label>
+              <div style={{ display: 'flex', gap: '0.75rem' }}>
+                <select name="idType" className="custom-select" value={formData.idType} onChange={handleInputChange} style={{ width: '140px' }}>
+                  <option value="Cédula">ID CARD (CED)</option>
+                  <option value="Pasaporte">PASSPORT</option>
+                </select>
+                <input type="text" name="documentNo" className="custom-input" value={formData.documentNo} onChange={handleInputChange} placeholder="000-0000000-0" style={{ flex: 1 }} />
+              </div>
+            </div>
+          </div>
 
-        <div className="form-row">
-          <label className="required">Last name:</label>
-          <input type="text" name="lastName" className="maint-input" value={formData.lastName} onChange={handleInputChange} placeholder="Enter your last name" />
-        </div>
-
-        <div className="form-row">
-          <label className="required">Genre:</label>
-          <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem' }}>
-              <input type="radio" name="genre" value="Masculine" checked={formData.genre === 'Masculine'} onChange={handleInputChange} /> Masculine
-            </label>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem' }}>
-              <input type="radio" name="genre" value="Female" checked={formData.genre === 'Female'} onChange={handleInputChange} /> Female
-            </label>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            <div className="form-group-row">
+              <label>MEDICAL SPECIALTY:</label>
+              <select name="specialty" className="custom-select" value={formData.specialty} onChange={handleInputChange} style={{ width: '100%' }}>
+                <option value="">Select Specialty...</option>
+                <option value="Cardiology">Cardiology</option>
+                <option value="Pediatrics">Pediatrics</option>
+                <option value="General Medicine">General Medicine</option>
+              </select>
+            </div>
+            <div className="form-group-row">
+              <label>EMAIL ADDRESS:</label>
+              <input type="email" name="email" className="custom-input" value={formData.email} onChange={handleInputChange} placeholder="doctor.name@clinic.com" style={{ width: '100%' }} />
+            </div>
+            <div className="form-group-row">
+              <label>CONTACT PHONE:</label>
+              <div style={{ display: 'flex', gap: '0.75rem' }}>
+                <input type="text" name="telephone" className="custom-input" value={formData.telephone} onChange={handleInputChange} placeholder="809-000-0000" style={{ flex: 1 }} />
+                <select name="phoneType" className="custom-select" value={formData.phoneType} onChange={handleInputChange} style={{ width: '120px' }}>
+                  <option value="Mobile">MOBILE</option>
+                  <option value="Office">OFFICE</option>
+                </select>
+              </div>
+            </div>
+            <div className="form-group-row">
+              <label>CALENDAR COLOR:</label>
+              <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                <input type="color" name="colorInAgenda" value={formData.colorInAgenda} onChange={handleInputChange} style={{ width: '50px', height: '50px', border: '2px solid #E2E8F0', borderRadius: '12px', cursor: 'pointer', padding: '2px', backgroundColor: 'white' }} />
+                <span style={{ fontSize: '0.85rem', color: '#1E293B', fontWeight: '800', fontFamily: 'monospace' }}>{formData.colorInAgenda.toUpperCase()}</span>
+              </div>
+            </div>
+            <div className="form-group-row">
+              <label>ACCOUNT STATUS:</label>
+              <label style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer', fontWeight: '700', fontSize: '0.85rem', color: '#0D9488' }}>
+                <input type="checkbox" name="asset" checked={formData.asset} onChange={handleInputChange} style={{ width: '20px', height: '20px', accentColor: '#0D9488' }} /> ACTIVE RECRUITMENT
+              </label>
+            </div>
           </div>
         </div>
 
-        <div className="form-row">
-          <label>Birthdate:</label>
-          <div style={{ position: 'relative', width: '200px' }}>
-            <input type="date" name="birthdate" className="maint-input" value={formData.birthdate} onChange={handleInputChange} />
+        <h3 style={{ fontSize: '1.25rem', color: '#1E293B', marginTop: '4rem', marginBottom: '2.5rem', fontWeight: '800', borderBottom: '2px solid #F1F5F9', paddingBottom: '1rem', letterSpacing: '-0.02em' }}>
+          LOCALIZATION & <span style={{ color: '#0D9488' }}>SIGNATURES</span>
+        </h3>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '3rem' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            <div className="form-group-row">
+              <label>PRACTICE ADDRESS:</label>
+              <textarea name="address" className="custom-input" style={{ height: '100px', padding: '1rem', width: '100%', resize: 'none', lineHeight: '1.6' }} value={formData.address} onChange={handleInputChange} placeholder="Enter the full physical location of the doctor's practice..." />
+            </div>
+            <div className="form-group-row">
+              <label>REGIONAL PROVINCE:</label>
+              <select name="province" className="custom-select" value={formData.province} onChange={handleInputChange} style={{ width: '100%' }}>
+                <option value="">Select Province...</option>
+                <option value="Santo Domingo">Santo Domingo</option>
+                <option value="Santiago">Santiago</option>
+              </select>
+            </div>
           </div>
-        </div>
-
-        <div className="form-row">
-          <label>Type of Identification:</label>
-          <select name="idType" className="maint-select" value={formData.idType} onChange={handleInputChange}>
-            <option value="Cédula">Cédula</option>
-            <option value="Pasaporte">Pasaporte</option>
-            <option value="RNC">RNC</option>
-          </select>
-        </div>
-
-        <div className="form-row">
-          <label className="required">Document No.:</label>
-          <input type="text" name="documentNo" className="maint-input required-input" value={formData.documentNo} onChange={handleInputChange} placeholder="___-_______-_" />
-        </div>
-
-        <div className="form-row">
-          <label>Executed:</label>
-          <input type="text" name="executed" className="maint-input" value={formData.executed} onChange={handleInputChange} />
-        </div>
-
-        <div style={{ borderTop: '1px solid #E5E7EB', margin: '1rem 0' }}></div>
-
-        <div className="form-row">
-          <label>Country:</label>
-          <select name="country" className="maint-select" value={formData.country} onChange={handleInputChange}>
-            <option value="República Dominicana">República Dominicana</option>
-            <option value="USA">USA</option>
-            <option value="Spain">Spain</option>
-          </select>
-        </div>
-
-        <div className="form-row">
-          <label>Province:</label>
-          <select name="province" className="maint-select" value={formData.province} onChange={handleInputChange}>
-            <option value="">Choosing a province...</option>
-            <option value="Santo Domingo">Santo Domingo</option>
-            <option value="Santiago">Santiago</option>
-          </select>
-        </div>
-
-        <div className="form-row">
-          <label>Sector:</label>
-          <select name="sector" className="maint-select" value={formData.sector} onChange={handleInputChange}>
-            <option value="">Choosing a sector...</option>
-          </select>
-        </div>
-
-        <div className="form-row">
-          <label>Address:</label>
-          <textarea name="address" className="maint-input" style={{ height: '60px', padding: '0.5rem' }} value={formData.address} onChange={handleInputChange} placeholder="Enter the Address" />
-        </div>
-
-        <div className="form-row">
-          <label>Telephone:</label>
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
-            <input type="text" name="telephone" className="maint-input" style={{ width: '200px' }} value={formData.telephone} onChange={handleInputChange} placeholder="___-_______-_" />
-            <select name="phoneType" className="maint-select" style={{ width: '100px' }} value={formData.phoneType} onChange={handleInputChange}>
-              <option value="Mobile">Mobile</option>
-              <option value="Office">Office</option>
-            </select>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            <div className="form-group-row">
+              <label>VALIDATION ASSETS:</label>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                <button className="btn-secondary" style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem', borderStyle: 'dashed', borderWidth: '2px', padding: '1rem', borderRadius: '12px', fontSize: '0.8rem' }}>
+                  <Plus size={20} /> UPLOAD DIGITAL SIGNATURE / STAMP
+                </button>
+                <div style={{ display: 'flex', gap: '2rem' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer', fontSize: '0.8rem', color: '#475569', fontWeight: '700' }}>
+                    <input type="checkbox" name="printSignature" checked={formData.printSignature} onChange={handleInputChange} style={{ width: '18px', height: '18px', accentColor: '#0D9488' }} /> PRINT SIGNATURE
+                  </label>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer', fontSize: '0.8rem', color: '#475569', fontWeight: '700' }}>
+                    <input type="checkbox" name="printStamp" checked={formData.printStamp} onChange={handleInputChange} style={{ width: '18px', height: '18px', accentColor: '#0D9488' }} /> PRINT STAMP
+                  </label>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-
-        <div style={{ borderTop: '1px solid #E5E7EB', margin: '1rem 0' }}></div>
-
-        <div className="form-row">
-          <label className="required">Email:</label>
-          <input type="email" name="email" className="maint-input required-input" value={formData.email} onChange={handleInputChange} placeholder="Enter your email address" />
-        </div>
-
-        <div className="form-row">
-          <label>Specialty:</label>
-          <select name="specialty" className="maint-select" value={formData.specialty} onChange={handleInputChange}>
-            <option value="">Choosing a specialty...</option>
-            <option value="Cardiology">Cardiology</option>
-            <option value="Pediatrics">Pediatrics</option>
-          </select>
-        </div>
-
-        <div className="form-row">
-          <label>Default fees:</label>
-          <input type="text" name="defaultFees" className="maint-input" style={{ width: '120px' }} value={formData.defaultFees} onChange={handleInputChange} placeholder="Percentage%" />
-        </div>
-
-        <div className="form-row">
-          <label>Visit Duration (minutes):</label>
-          <select name="visitDuration" className="maint-select" value={formData.visitDuration} onChange={handleInputChange}>
-            <option value="Importar de centro medico">Importar de centro medico</option>
-            <option value="15">15 minutes</option>
-            <option value="30">30 minutes</option>
-          </select>
-        </div>
-
-        <div className="form-row">
-          <label>Color in Agenda:</label>
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
-            <select name="colorInAgenda" className="maint-select" value={formData.colorInAgenda} onChange={handleInputChange}>
-              <option value="">Select Color</option>
-              <option value="#F28C28">Orange</option>
-              <option value="#3B82F6">Blue</option>
-            </select>
-            <div style={{ width: '60px', height: '34px', backgroundColor: formData.colorInAgenda || '#FFF', border: '1px solid #E5E7EB', borderRadius: '4px' }}></div>
-          </div>
-        </div>
-
-        <div className="form-row">
-          <label>Id Universal:</label>
-          <input type="text" name="idUniversal" className="maint-input" value={formData.idUniversal} onChange={handleInputChange} placeholder="Enter the Universal ID" />
-        </div>
-
-        <div className="form-row">
-          <label>Digital Signature and Seal:</label>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
-            <button className="btn-action secondary" style={{ backgroundColor: '#F8A359', color: 'white', border: 'none' }}>VIEW / ADD +</button>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8rem' }}>
-              Print Signature <input type="checkbox" name="printSignature" checked={formData.printSignature} onChange={handleInputChange} />
-            </label>
-            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8rem' }}>
-              Print Stamp <input type="checkbox" name="printStamp" checked={formData.printStamp} onChange={handleInputChange} />
-            </label>
-          </div>
-        </div>
-
-        <div className="form-row">
-          <label>Asset:</label>
-          <input type="checkbox" name="asset" checked={formData.asset} onChange={handleInputChange} />
         </div>
       </div>
 
-      <div style={{ marginTop: '3rem' }}>
-        <h3 style={{ fontSize: '1.15rem', fontWeight: '500', marginBottom: '1rem', color: '#1F2937' }}>Monitoring programs</h3>
-        <div className="maint-table-container">
-          <table className="maint-table">
-            <thead>
-              <tr>
-                <th style={{ width: '40%' }}>Name</th>
-                <th style={{ width: '30%' }}>State</th>
-                <th style={{ width: '30%' }}>Services</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                  <select className="table-select"><option>Choose a program ...</option></select>
-                </td>
-                <td></td>
-                <td style={{ textAlign: 'right' }}>
-                  <button className="btn-add-table"><Plus size={14} /></button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2.5rem', marginBottom: '4rem' }}>
+        <div className="card" style={{ padding: '2rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+            <h3 style={{ fontSize: '1.1rem', color: '#1E293B', margin: 0, fontWeight: '800' }}>MONITORING PROGRAMS</h3>
+            <button style={{ backgroundColor: '#F0FDFA', color: '#0D9488', border: '1px solid currentColor', padding: '0.4rem 1rem', borderRadius: '100px', fontWeight: '800', fontSize: '0.7rem', cursor: 'pointer' }}>
+              <Plus size={14} style={{ marginRight: '4px' }} /> ENROLL
+            </button>
+          </div>
+          <div className="maint-table-container">
+            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <thead>
+                <tr style={{ backgroundColor: '#0B3B3C', color: 'white' }}>
+                  <th style={{ padding: '1rem', textAlign: 'left', fontSize: '0.8rem', fontWeight: '600' }}>PROGRAM NAME</th>
+                  <th style={{ padding: '1rem', textAlign: 'left', fontSize: '0.8rem', fontWeight: '600' }}>CURRENT STATUS</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colSpan="2" style={{ padding: '3rem', textAlign: 'center', color: '#94A3B8', fontSize: '0.85rem', fontWeight: '500' }}>No monitoring programs currently assigned.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
 
-      <div style={{ marginTop: '2rem', marginBottom: '4rem' }}>
-        <h3 style={{ fontSize: '1.15rem', fontWeight: '500', marginBottom: '1rem', color: '#1F2937' }}>Roles</h3>
-        <div className="maint-table-container">
-          <table className="maint-table">
-            <thead>
-              <tr>
-                <th style={{ width: '100%' }}>Name</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                  <select className="table-select"><option>Choosing a role...</option></select>
-                </td>
-              </tr>
-              <tr style={{ borderTop: 'none' }}>
-                <td style={{ textAlign: 'right', padding: '0.5rem' }}>
-                  <button className="btn-add-table"><Plus size={14} /></button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <div className="card" style={{ padding: '2rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+            <h3 style={{ fontSize: '1.1rem', color: '#1E293B', margin: 0, fontWeight: '800' }}>SYSTEM PERMISSIONS</h3>
+            <button style={{ backgroundColor: '#F0FDFA', color: '#0D9488', border: '1px solid currentColor', padding: '0.4rem 1rem', borderRadius: '100px', fontWeight: '800', fontSize: '0.7rem', cursor: 'pointer' }}>
+              <Plus size={14} style={{ marginRight: '4px' }} /> ASSIGN ROLE
+            </button>
+          </div>
+          <div className="maint-table-container">
+            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <thead>
+                <tr style={{ backgroundColor: '#0B3B3C', color: 'white' }}>
+                  <th style={{ padding: '1rem', textAlign: 'left', fontSize: '0.8rem', fontWeight: '600' }}>ROLE IDENTITY</th>
+                  <th style={{ padding: '1rem', textAlign: 'center', fontSize: '0.8rem', width: '80px', fontWeight: '600' }}>REMOVE</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style={{ backgroundColor: '#F9FAFB' }}>
+                  <td style={{ padding: '1.25rem', fontSize: '0.9rem', color: '#1E293B', fontWeight: '700' }}>DOCTOR_ROLE</td>
+                  <td style={{ padding: '1.25rem', textAlign: 'center' }}>
+                    <button style={{ background: 'none', border: 'none', color: '#EF4444', cursor: 'pointer', opacity: 0.7 }} className="hover-opacity-100"><Check size={20} style={{ transform: 'rotate(45deg)' }} /></button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
@@ -259,64 +226,77 @@ const Doctors = () => {
   const renderNCFTypes = () => {
     if (ncfView === 'create') {
       return (
-        <div style={{ padding: '1rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid #F28C28', paddingBottom: '0.5rem' }}>
-            <h3 style={{ fontSize: '1.4rem', color: '#1F2937', margin: 0 }}>Type NCF</h3>
-            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-              <button className="btn-cancel" onClick={() => setNcfView('list')}>CANCEL</button>
-              <button className="btn-keep"><Check size={16} /> KEEP</button>
+        <div style={{ padding: '2.5rem', animation: 'fadeIn 0.3s ease-out' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem', borderBottom: '2px solid #F1F5F9', paddingBottom: '1rem' }}>
+            <h3 style={{ fontSize: '1.25rem', color: '#1E293B', margin: 0, fontWeight: '800' }}>CREATE <span style={{ color: '#0D9488' }}>NCF TYPE</span></h3>
+            <div style={{ display: 'flex', gap: '1rem' }}>
+              <button className="btn-secondary" onClick={() => setNcfView('list')}>DISCARD</button>
+              <button className="btn-primary"><Check size={18} /> SAVE NCF TYPE</button>
             </div>
           </div>
-          <div className="form-grid" style={{ display: 'grid', gap: '1.2rem', maxWidth: '500px' }}>
-            <div className="form-row">
-              <label>Code:</label>
-              <input type="text" className="maint-input" placeholder="NCF Code" />
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+            <div className="filter-group">
+              <label className="filter-label">REGULATORY CODE</label>
+              <input type="text" className="custom-input" placeholder="e.g., B01" style={{ width: '100%' }} />
             </div>
-            <div className="form-row">
-              <label>Name:</label>
-              <input type="text" className="maint-input" placeholder="NCF Name" />
+            <div className="filter-group">
+              <label className="filter-label">DESCRIPTION / IDENTITY</label>
+              <input type="text" className="custom-input" placeholder="e.g., Factura de Crédito Fiscal" style={{ width: '100%' }} />
             </div>
-            <div className="form-row">
-              <label>Document type:</label>
-              <select className="maint-select">
-                <option value=""></option>
+            <div className="filter-group">
+              <label className="filter-label">DOCUMENT CATEGORY</label>
+              <select className="custom-select" style={{ width: '100%' }}>
+                <option value="">Select Category...</option>
+                <option value="Invoice">Medical Invoice</option>
+                <option value="Receipt">Payment Receipt</option>
               </select>
             </div>
-            <div className="form-row">
-              <label>Sequential:</label>
-              <input type="text" className="maint-input" />
-            </div>
-            <div className="form-row">
-              <label>Expire:</label>
-              <input type="checkbox" />
-            </div>
+          </div>
+          <div style={{ display: 'flex', gap: '2.5rem', marginTop: '2.5rem', padding: '1.5rem', backgroundColor: '#F8FAFC', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer', fontWeight: '800', fontSize: '0.8rem', color: '#475569' }}>
+              <input type="checkbox" style={{ width: '18px', height: '18px', accentColor: '#0D9488' }} /> SEQUENTIAL GENERATION
+            </label>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer', fontWeight: '800', fontSize: '0.8rem', color: '#475569' }}>
+              <input type="checkbox" style={{ width: '18px', height: '18px', accentColor: '#0D9488' }} /> EXPIRATION TRACKING
+            </label>
           </div>
         </div>
       );
     }
 
     return (
-      <div style={{ padding: '1rem' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-          <h3 style={{ fontSize: '1.8rem', color: '#1F2937', margin: 0 }}>Types of NCF</h3>
-          <button className="btn-new-ncf" onClick={() => setNcfView('create')}>
-            <Plus size={16} color="#F28C28" /> NEW TYPE OF NCF
+      <div style={{ padding: '2.5rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem' }}>
+          <div>
+            <h3 style={{ fontSize: '1.5rem', color: '#1E293B', margin: 0, fontWeight: '800' }}>NCF Classifications</h3>
+            <p style={{ margin: '0.25rem 0 0', color: '#64748B', fontSize: '0.9rem' }}>Government-regulated tax receipt schemas and configurations.</p>
+          </div>
+          <button className="btn-primary" onClick={() => setNcfView('create')}>
+            <Plus size={18} /> DEFINE NEW TYPE
           </button>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: '#64748B', marginBottom: '1rem' }}>
-          <FileText size={16} /> List of NCF types
-        </div>
 
-        <div style={{ marginBottom: '2rem' }}>
-          <label className="search-label" style={{ backgroundColor: '#F28C28', color: 'white', fontSize: '0.7rem', fontWeight: '700', padding: '0.2rem 0.5rem', borderRadius: '2px 2px 0 0' }}>LOOK FOR:</label>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <input type="text" placeholder="Look for" style={{ width: '300px', padding: '0.5rem', border: '1px solid #D1D5DB', borderRadius: '0 2px 2px 2px' }} />
-            <Search size={20} color="#F28C28" />
-          </div>
-        </div>
-
-        <div style={{ textAlign: 'center', padding: '4rem 0', color: '#64748B', fontSize: '1.2rem' }}>
-          There is no information to display.
+        <div className="maint-table-container">
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <thead>
+              <tr style={{ backgroundColor: '#0B3B3C', color: 'white' }}>
+                <th style={{ padding: '1.25rem', textAlign: 'left', fontWeight: '600', fontSize: '0.85rem' }}>NCF CODE</th>
+                <th style={{ padding: '1.25rem', textAlign: 'left', fontWeight: '600', fontSize: '0.85rem' }}>NAME / DESCRIPTION</th>
+                <th style={{ padding: '1.25rem', textAlign: 'left', fontWeight: '600', fontSize: '0.85rem' }}>DOC TYPE</th>
+                <th style={{ padding: '1.25rem', textAlign: 'center', fontWeight: '600', fontSize: '0.85rem' }}>SEQUENTIAL</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colSpan="4" style={{ padding: '5rem', textAlign: 'center' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem', color: '#94A3B8' }}>
+                    <FileText size={64} style={{ opacity: 0.1 }} />
+                    <p style={{ margin: 0, fontSize: '1.1rem', fontWeight: '600' }}>No NCF types have been defined for this practitioner.</p>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     );
@@ -325,26 +305,31 @@ const Doctors = () => {
   const renderNCFSequences = () => {
     if (ncfView === 'create') {
       return (
-        <div style={{ padding: '1rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', borderBottom: '1px solid #F28C28', paddingBottom: '0.5rem' }}>
-            <h3 style={{ fontSize: '1.4rem', color: '#1F2937', margin: 0 }}>NCF Sequence</h3>
-            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-              <button className="btn-cancel" onClick={() => setNcfView('list')}>CANCEL</button>
-              <button className="btn-keep"><Check size={16} /> KEEP</button>
+        <div style={{ padding: '2.5rem', animation: 'fadeIn 0.3s ease-out' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem', borderBottom: '2px solid #F1F5F9', paddingBottom: '1rem' }}>
+            <h3 style={{ fontSize: '1.25rem', color: '#1E293B', margin: 0, fontWeight: '800' }}>ACTIVATE <span style={{ color: '#0D9488' }}>NCF SEQUENCE</span></h3>
+            <div style={{ display: 'flex', gap: '1rem' }}>
+              <button className="btn-secondary" onClick={() => setNcfView('list')}>CANCEL</button>
+              <button className="btn-primary"><Check size={18} /> CONFIRM ACTIVATION</button>
             </div>
           </div>
-          <div className="form-grid" style={{ display: 'grid', gap: '1.2rem', maxWidth: '500px' }}>
-            <div className="form-row">
-              <label>NCF Type:</label>
-              <select className="maint-select">
-                <option value=""></option>
+          <div style={{ display: 'grid', gap: '2rem', maxWidth: '600px' }}>
+            <div className="filter-group">
+              <label className="filter-label">TARGET NCF CLASSIFICATION</label>
+              <select className="custom-select" style={{ width: '100%' }}>
+                <option value="">Choosing an NCF Type...</option>
+                <option value="1">B01 - Crédito Fiscal</option>
+                <option value="2">B02 - Consumo</option>
               </select>
             </div>
-            <div className="form-row">
-              <label>Range:</label>
-              <div style={{ display: 'flex', gap: '1rem' }}>
-                <input type="text" className="maint-input" placeholder="From" style={{ maxWidth: '100px' }} />
-                <input type="text" className="maint-input" placeholder="Until" style={{ maxWidth: '100px' }} />
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
+              <div className="filter-group">
+                <label className="filter-label">STARTING INDEX</label>
+                <input type="text" className="custom-input" placeholder="00000001" style={{ width: '100%', fontFamily: 'monospace', fontWeight: '700' }} />
+              </div>
+              <div className="filter-group">
+                <label className="filter-label">TERMINAL INDEX</label>
+                <input type="text" className="custom-input" placeholder="00010000" style={{ width: '100%', fontFamily: 'monospace', fontWeight: '700' }} />
               </div>
             </div>
           </div>
@@ -353,29 +338,36 @@ const Doctors = () => {
     }
 
     return (
-      <div style={{ padding: '1rem' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-          <h3 style={{ fontSize: '1.8rem', color: '#1F2937', margin: 0 }}>NCF sequences</h3>
-          <button className="btn-new-ncf" onClick={() => setNcfView('create')}>
-            <Plus size={16} color="#F28C28" /> NEW NCF SEQUENCE
+      <div style={{ padding: '2.5rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem' }}>
+          <div>
+            <h3 style={{ fontSize: '1.5rem', color: '#1E293B', margin: 0, fontWeight: '800' }}>Active Sequences</h3>
+            <p style={{ margin: '0.25rem 0 0', color: '#64748B', fontSize: '0.9rem' }}>Live allocation tracking for NCF number ranges.</p>
+          </div>
+          <button className="btn-primary" onClick={() => setNcfView('create')}>
+            <Plus size={18} /> GENERATE RANGE
           </button>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: '#64748B', marginBottom: '1rem' }}>
-          <FileText size={16} /> NCF sequence list
         </div>
 
         <div className="maint-table-container">
-          <table className="maint-table">
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
-              <tr>
-                <th>Type NCF</th>
-                <th>Next NCF Available</th>
-                <th>Available NCF Quantity</th>
-                <th>Date of creation</th>
+              <tr style={{ backgroundColor: '#0B3B3C', color: 'white' }}>
+                <th style={{ padding: '1.25rem', textAlign: 'left', fontWeight: '600', fontSize: '0.85rem' }}>NCF TYPE</th>
+                <th style={{ padding: '1.25rem', textAlign: 'center', fontWeight: '600', fontSize: '0.85rem' }}>NEXT IN LINE</th>
+                <th style={{ padding: '1.25rem', textAlign: 'center', fontWeight: '600', fontSize: '0.85rem' }}>AVAILABILITY</th>
+                <th style={{ padding: '1.25rem', textAlign: 'right', fontWeight: '600', fontSize: '0.85rem' }}>EXPIRATION</th>
               </tr>
             </thead>
             <tbody>
-              {/* Empty state */}
+              <tr>
+                <td colSpan="4" style={{ padding: '5rem', textAlign: 'center' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem', color: '#94A3B8' }}>
+                    <RotateCcw size={64} style={{ opacity: 0.1 }} />
+                    <p style={{ margin: 0, fontSize: '1.1rem', fontWeight: '600' }}>No active tax sequences found for this practitioner.</p>
+                  </div>
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -384,18 +376,19 @@ const Doctors = () => {
   };
 
   const renderNCFTab = () => (
-    <div style={{ flex: 1, backgroundColor: 'white', borderRadius: '4px', border: '1px solid #E5E7EB', overflow: 'hidden' }}>
-      <div style={{ display: 'flex', backgroundColor: '#139487' }}>
+    <div style={{ flex: 1, backgroundColor: 'white', borderRadius: '16px', border: '1px solid #E2E8F0', overflow: 'hidden', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
+      <div style={{ display: 'flex', backgroundColor: '#0B3B3C', padding: '0.5rem' }}>
         <div
           onClick={() => { setNcfTab('NCF Types'); setNcfView('list'); }}
           style={{
-            padding: '0.8rem 1.5rem',
-            color: 'white',
+            padding: '0.75rem 1.5rem',
+            color: ncfTab === 'NCF Types' ? 'white' : 'rgba(255,255,255,0.6)',
             fontSize: '0.85rem',
-            fontWeight: '600',
+            fontWeight: '700',
             cursor: 'pointer',
             backgroundColor: ncfTab === 'NCF Types' ? 'rgba(255,255,255,0.1)' : 'transparent',
-            borderRight: '1px solid rgba(255,255,255,0.1)'
+            borderRadius: '8px',
+            transition: 'all 0.2s'
           }}
         >
           NCF Types
@@ -403,15 +396,18 @@ const Doctors = () => {
         <div
           onClick={() => { setNcfTab('NCF sequences'); setNcfView('list'); }}
           style={{
-            padding: '0.8rem 1.5rem',
-            color: 'white',
+            padding: '0.75rem 1.5rem',
+            color: ncfTab === 'NCF sequences' ? 'white' : 'rgba(255,255,255,0.6)',
             fontSize: '0.85rem',
-            fontWeight: '600',
+            fontWeight: '700',
             cursor: 'pointer',
-            backgroundColor: ncfTab === 'NCF sequences' ? 'rgba(255,255,255,0.1)' : 'transparent'
+            backgroundColor: ncfTab === 'NCF sequences' ? 'rgba(255,255,255,0.1)' : 'transparent',
+            borderRadius: '8px',
+            transition: 'all 0.2s',
+            marginLeft: '0.5rem'
           }}
         >
-          NCF sequences
+          NCF Sequences
         </div>
       </div>
       {ncfTab === 'NCF Types' ? renderNCFTypes() : renderNCFSequences()}
@@ -419,136 +415,193 @@ const Doctors = () => {
   );
 
   const renderMaintenanceView = () => (
-    <div className="maintenance-container">
-      <div className="page-header bordered" style={{ paddingBottom: '1rem', borderBottom: '2px solid #E5E7EB' }}>
-        <h2 className="page-title" style={{ fontSize: '1.4rem', color: '#1F2937' }}>Doctor Maintenance</h2>
-        <div className="action-buttons">
-          <button className="btn-action secondary" onClick={() => setView('list')}>
-            <ArrowLeft size={16} /> GO BACK
+    <div className="maintenance-container" style={{ maxWidth: '1400px', margin: '0 auto', padding: '2rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem', flexWrap: 'wrap', gap: '1.5rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+          <button onClick={() => setView('list')} style={{ backgroundColor: 'white', border: '1px solid #E2E8F0', padding: '0.6rem', borderRadius: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#64748B', transition: 'all 0.2s' }}>
+            <ArrowLeft size={20} />
           </button>
-          <button className="btn-action secondary">
-            <UserPlus size={16} /> NEW DOCTOR
-          </button>
-          <button className="btn-action secondary">
-            <RotateCcw size={16} /> RESET PASSWORD
-          </button>
-          <button className="btn-action primary">
-            <Check size={16} /> KEEP
-          </button>
-        </div>
-      </div>
-
-      <div style={{ display: 'flex', gap: '2rem', marginTop: '1.5rem' }} className="maint-layout">
-        <div style={{ width: '220px', flexShrink: 0 }} className="maint-sidebar">
-          <div style={{ backgroundColor: 'white', borderRadius: '4px', overflow: 'hidden', border: '1px solid #E5E7EB' }}>
-            {tabs.map(tab => (
-              <div
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                style={{
-                  padding: '1rem 1.5rem',
-                  cursor: 'pointer',
-                  fontSize: '0.85rem',
-                  fontWeight: '600',
-                  color: activeTab === tab ? 'white' : '#64748B',
-                  backgroundColor: activeTab === tab ? '#F28C28' : 'transparent',
-                  borderBottom: '1px solid #F1F5F9',
-                  transition: 'all 0.2s',
-                  position: 'relative'
-                }}
-              >
-                {tab}
-                {activeTab === tab && (
-                  <div style={{
-                    position: 'absolute',
-                    right: 0,
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    width: 0,
-                    height: 0,
-                    borderTop: '10px solid transparent',
-                    borderBottom: '10px solid transparent',
-                    borderRight: '10px solid white'
-                  }}></div>
-                )}
-              </div>
-            ))}
+          <div>
+            <h2 style={{ fontSize: '2rem', fontWeight: '800', color: '#1E293B', margin: 0 }}>Practitioner <span style={{ color: '#0D9488' }}>Profile</span></h2>
+            <p style={{ color: '#64748B', margin: '0.25rem 0 0', fontSize: '0.9rem', fontWeight: '500' }}>Comprehensive management of clinical credentials and operational settings.</p>
           </div>
         </div>
-        {activeTab === 'General Profile' && renderGeneralProfile()}
-        {activeTab === 'Time' && <div style={{ flex: 1, padding: '2rem', backgroundColor: 'white', borderRadius: '4px', border: '1px solid #E5E7EB' }}>Time Management Settings</div>}
-        {activeTab === 'NCF' && renderNCFTab()}
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+          <button className="btn-secondary" style={{ padding: '0.85rem 1.5rem' }}>
+            <RotateCcw size={18} /> RESET PASSWORD
+          </button>
+          <button className="btn-primary" style={{ padding: '0.85rem 2.5rem' }}>
+            <Check size={20} /> COMMIT CHANGES
+          </button>
+        </div>
       </div>
 
-      <style>{`
-        .maintenance-container { max-width: 1200px; margin: 0 auto; }
-        .form-row { display: flex; align-items: center; gap: 1.5rem; min-height: 42px; }
-        .form-row label { width: 200px; text-align: right; font-size: 0.85rem; font-weight: 600; color: #4B5563; }
-        .form-row label.required { color: #DC2626; }
-        .maint-input, .maint-select { flex: 1; padding: 0.5rem 0.8rem; border: 1px solid #D1D5DB; border-radius: 4px; font-size: 0.9rem; outline: none; transition: border-color 0.2s; }
-        .maint-input:focus, .maint-select:focus { border-color: #F28C28; }
-        .required-input { border-color: #FCA5A5; }
-        .btn-action { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; border-radius: 4px; font-weight: 700; font-size: 0.75rem; cursor: pointer; text-transform: uppercase; transition: all 0.2s; }
-        .btn-action.primary { background-color: #F28C28; color: white; border: none; }
-        .btn-action.secondary { background-color: transparent; color: #F28C28; border: none; }
-        .btn-action:hover { filter: brightness(0.95); }
-        .btn-upload-text { background: none; border: none; color: #F28C28; font-weight: 700; font-size: 0.9rem; cursor: pointer; text-transform: uppercase; display: flex; align-items: center; gap: 0.5rem; transition: opacity 0.2s; }
-        .btn-upload-text:hover { opacity: 0.8; }
-        .btn-cancel { background: none; border: none; color: #64748B; font-weight: 700; font-size: 0.8rem; cursor: pointer; }
-        .btn-keep { background-color: #F28C28; color: white; border: none; padding: 0.5rem 1rem; border-radius: 4px; font-weight: 700; font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; }
-        .btn-new-ncf { background: none; border: none; color: #1F2937; font-weight: 700; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; }
-        .maint-table-container { background-color: white; border: 1px solid #E5E7EB; border-radius: 4px; overflow: hidden; }
-        .maint-table { width: 100%; border-collapse: collapse; }
-        .maint-table th { background-color: #0B3B3C; color: white; text-align: left; padding: 0.8rem 1rem; font-size: 0.8rem; font-weight: 600; }
-        .maint-table td { padding: 0.8rem 1rem; border-top: 1px solid #F1F5F9; }
-        .table-select { width: 100%; border: none; background: none; font-size: 0.85rem; color: #64748B; outline: none; }
-        .btn-add-table { background-color: #F8A359; color: white; border: none; padding: 4px; border-radius: 2px; cursor: pointer; }
-        @media (max-width: 768px) {
-          .maint-layout { flex-direction: column; }
-          .maint-sidebar { width: 100% !important; }
-          .form-row { flex-direction: column; align-items: flex-start; gap: 0.2rem; }
-          .form-row label { width: 100%; text-align: left; }
-        }
-      `}</style>
+      <div style={{ display: 'flex', gap: '3rem' }} className="maint-layout">
+        <div style={{ width: '300px', flexShrink: 0 }}>
+          <div className="card" style={{ padding: '1rem', position: 'sticky', top: '2rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            {tabs.map(tab => {
+              const isActive = activeTab === tab;
+              return (
+                <div
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  style={{
+                    padding: '1.25rem 1.75rem',
+                    cursor: 'pointer',
+                    fontSize: '0.85rem',
+                    fontWeight: '900',
+                    color: isActive ? 'white' : '#64748B',
+                    backgroundColor: isActive ? '#0D9488' : 'transparent',
+                    borderRadius: '16px',
+                    transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    boxShadow: isActive ? '0 10px 15px -3px rgba(13, 148, 136, 0.15)' : 'none',
+                    transform: isActive ? 'translateX(5px)' : 'none'
+                  }}
+                >
+                  <span>{tab.toUpperCase()}</span>
+                  {isActive && <Check size={18} />}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <div style={{ flex: 1 }}>
+          {activeTab === 'General Profile' && renderGeneralProfile()}
+          {activeTab === 'Time' && (
+            <div className="card" style={{ padding: '5rem 3rem', textAlign: 'center', animation: 'fadeIn 0.4s ease-out' }}>
+              <div style={{ backgroundColor: '#F0FDFA', width: '100px', height: '100px', borderRadius: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 2.5rem', border: '1px solid #CCFBF1', transform: 'rotate(-5deg)' }}>
+                <RotateCcw size={48} color="#0D9488" />
+              </div>
+              <h3 style={{ fontSize: '1.75rem', color: '#1E293B', fontWeight: '800', letterSpacing: '-0.02em' }}>Calendar <span style={{ color: '#0D9488' }}>Orchestration</span></h3>
+              <p style={{ color: '#64748B', maxWidth: '550px', margin: '1rem auto 2.5rem', lineHeight: '1.8', fontSize: '1rem', fontWeight: '500' }}>Synchronize clinical availability, consultation cadences, and automated scheduling logic for high-efficiency patient flow.</p>
+              <button className="btn-primary" style={{ padding: '1rem 3rem' }}>LOAD CALENDAR ENGINE</button>
+            </div>
+          )}
+          {activeTab === 'NCF' && renderNCFTab()}
+        </div>
+      </div>
     </div>
   );
 
   const renderListView = () => (
-    <>
-      <div className="page-header bordered">
-        <h2 className="page-title">Doctor Maintenance</h2>
-        <div style={{ display: 'flex', gap: '1rem' }}>
-          <button className="btn-upload-text" onClick={() => window.location.href = '/medcore/upload-excel'}>
-            <FileSpreadsheet size={16} /> UPLOAD EXCEL
+    <div className="doctors-list-view" style={{ padding: '2rem' }}>
+      <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2.5rem', flexWrap: 'wrap', gap: '1.5rem' }}>
+        <div>
+          <h2 className="page-title" style={{ margin: 0, fontSize: '2rem', fontWeight: '800', color: '#1E293B' }}>Doctor <span style={{ color: '#0D9488' }}>Management</span></h2>
+          <p style={{ color: '#64748B', margin: '0.25rem 0 0', fontSize: '0.9rem' }}>Maintain professional medical staff, specialties, and clinical permissions.</p>
+        </div>
+        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+          <button className="btn-secondary" onClick={() => navigate('/upload-excel')}>
+            <FileSpreadsheet size={18} /> CARRY DATA
           </button>
-          <button className="btn-new-doctor" onClick={() => setView('maintenance')}>
-            <UserPlus size={16} />
-            NEW DOCTOR
+          <button className="btn-primary" onClick={() => setView('maintenance')}>
+            <UserPlus size={18} /> NEW DOCTOR ENTRY
           </button>
         </div>
       </div>
 
-      <div className="card" style={{ padding: '2rem', height: '500px', backgroundColor: 'white', borderRadius: '4px', boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }}>
-        <div className="search-container">
-          <label className="search-label">LOOK FOR:</label>
-          <div className="search-input-wrapper">
-            <input type="text" placeholder="Look for" className="search-input" />
-            <div className="search-icons">
-              <button className="search-icon-btn" title="Upload from Excel" onClick={() => window.location.href = '/medcore/upload-excel'}>
-                <FileSpreadsheet size={20} strokeWidth={2.5} />
-              </button>
-              <button className="search-icon-btn" title="Export/Download"><Download size={20} strokeWidth={2.5} /></button>
+      <div className="card" style={{ padding: '2rem', marginBottom: '2.5rem' }}>
+        <div style={{ maxWidth: '600px' }}>
+          <div className="filter-group">
+            <label className="filter-label">SEARCH PRACTITIONERS</label>
+            <div style={{ position: 'relative' }}>
+              <input type="text" className="custom-input" placeholder="Search by name, specialty, or identification number..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} style={{ width: '100%', paddingLeft: '2.5rem' }} />
+              <Search size={18} color="#94A3B8" style={{ position: 'absolute', left: '0.8rem', top: '50%', transform: 'translateY(-50%)' }} />
             </div>
           </div>
         </div>
-        <div className="empty-state">No existe información para mostrar</div>
       </div>
-    </>
+
+      <div className="card" style={{ overflow: 'hidden' }}>
+        <div className="maint-table-container">
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <thead>
+              <tr style={{ backgroundColor: '#0B3B3C', color: 'white' }}>
+                <th style={{ padding: '1.25rem', textAlign: 'left', fontWeight: '600', fontSize: '0.85rem' }}>PRACTITIONER IDENTITY</th>
+                <th style={{ padding: '1.25rem', textAlign: 'left', fontWeight: '600', fontSize: '0.85rem' }}>SPECIALIZATION</th>
+                <th style={{ padding: '1.25rem', textAlign: 'left', fontWeight: '600', fontSize: '0.85rem' }}>IDENTIFICATION</th>
+                <th style={{ padding: '1.25rem', textAlign: 'left', fontWeight: '600', fontSize: '0.85rem' }}>CONTACT INFO</th>
+                <th style={{ padding: '1.25rem', textAlign: 'left', fontWeight: '600', fontSize: '0.85rem' }}>STATUS</th>
+                <th style={{ padding: '1.25rem', textAlign: 'center', fontWeight: '600', fontSize: '0.85rem', width: '100px' }}>ACTIONS</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                { id: 1, name: 'Dr. Juan Perez', specialty: 'Cardiology', iden: '001-0000000-1', phone: '809-555-0101', status: 'Active' },
+                { id: 2, name: 'Dra. Maria Garcia', specialty: 'Pediatrics', iden: '001-0000000-2', phone: '809-555-0102', status: 'Active' },
+                { id: 3, name: 'Dr. Carlos Rodriguez', specialty: 'General Medicine', iden: '001-0000000-3', phone: '809-555-0103', status: 'On Leave' },
+                { id: 4, name: 'Dra. Ana Martinez', specialty: 'Dermatology', iden: '001-0000000-4', phone: '809-555-0104', status: 'Active' },
+                { id: 5, name: 'Dr. Luis Hernandez', specialty: 'Neurology', iden: '001-0000000-5', phone: '809-555-0105', status: 'Active' },
+              ].filter(doc => doc.name.toLowerCase().includes(searchTerm.toLowerCase()) || doc.specialty.toLowerCase().includes(searchTerm.toLowerCase())).map((doc, idx) => (
+                <tr key={doc.id} style={{ borderBottom: '1px solid #F1F5F9', backgroundColor: idx % 2 === 0 ? 'white' : '#F9FAFB' }}>
+                  <td style={{ padding: '1.25rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                      <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: 'linear-gradient(135deg, #0D9488 0%, #0F766E 100%)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.85rem', fontWeight: '800', boxShadow: '0 4px 6px -1px rgba(13, 148, 136, 0.2)' }}>
+                        {doc.name.split(' ').filter(n => !n.includes('.')).map(n => n[0]).join('').substring(0, 2).toUpperCase()}
+                      </div>
+                      <span style={{ fontWeight: '700', color: '#1E293B', fontSize: '0.95rem' }}>{doc.name}</span>
+                    </div>
+                  </td>
+                  <td style={{ padding: '1.25rem' }}>
+                    <span style={{ backgroundColor: '#F0FDFA', color: '#0D9488', padding: '0.3rem 0.8rem', borderRadius: '4px', fontWeight: '800', fontSize: '0.7rem', border: '1px solid currentColor' }}>{doc.specialty.toUpperCase()}</span>
+                  </td>
+                  <td style={{ padding: '1.25rem', color: '#64748B', fontSize: '0.85rem', fontWeight: '600' }}>{doc.iden}</td>
+                  <td style={{ padding: '1.25rem', color: '#64748B', fontSize: '0.85rem', fontWeight: '600' }}>{doc.phone}</td>
+                  <td style={{ padding: '1.25rem' }}>
+                    <span style={{
+                      backgroundColor: doc.status === 'Active' ? '#F0FDFA' : '#FFFBEB',
+                      color: doc.status === 'Active' ? '#0D9488' : '#D97706',
+                      padding: '0.3rem 0.8rem',
+                      borderRadius: '100px',
+                      fontSize: '0.7rem',
+                      fontWeight: '800',
+                      border: '1px solid currentColor'
+                    }}>
+                      {doc.status.toUpperCase()}
+                    </span>
+                  </td>
+                  <td style={{ padding: '1.25rem', textAlign: 'center' }}>
+                    <div style={{ display: 'flex', justifyContent: 'center', gap: '0.75rem' }}>
+                      <button onClick={() => setView('maintenance')} style={{ background: 'none', border: 'none', color: '#0D9488', cursor: 'pointer', opacity: 0.6 }} className="hover-opacity-100">
+                        <UserPlus size={20} />
+                      </button>
+                      <button style={{ background: 'none', border: 'none', color: '#0D9488', cursor: 'pointer', opacity: 0.6 }} className="hover-opacity-100">
+                        <Search size={20} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   );
 
   return (
     <DashboardLayout>
       {view === 'list' ? renderListView() : renderMaintenanceView()}
+      <style>{`
+        .filter-label { display: block; fontSize: 0.75rem; fontWeight: 800; color: #64748B; marginBottom: 0.5rem; letterSpacing: 0.05em; }
+        .custom-input, .custom-select { padding: 0.6rem 0.8rem; border: 1px solid #D1D5DB; border-radius: 8px; font-size: 0.9rem; outline: none; transition: all 0.2s; }
+        .custom-input:focus, .custom-select:focus { border-color: #0D9488; box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.1); }
+        .required::after { content: " *"; color: #EF4444; }
+        .form-group-row { display: grid; grid-template-columns: 140px 1fr; gap: 1rem; align-items: center; }
+        .form-group-row label { font-size: 0.85rem; fontWeight: 700; color: #475569; }
+        .hover-opacity-100:hover { opacity: 1 !important; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        
+        @media (max-width: 768px) {
+          .form-group-row { grid-template-columns: 1fr; gap: 0.5rem; }
+          .specialty-pill-container { flex-direction: column !important; }
+          .form-grid-stack { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
     </DashboardLayout>
   );
 };

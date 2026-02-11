@@ -40,12 +40,12 @@ const Prescriptions = () => {
           <tbody>
             {MOCK_PRESCRIPTIONS.map(rx => (
               <tr key={rx.id}>
-                <td><span style={{ fontWeight: 600, color: 'var(--text-muted)' }}>{rx.rxId}</span></td>
-                <td><b style={{ color: 'var(--heading)' }}>Dr. Sameer Khan</b></td>
-                <td style={{ color: 'var(--text-main)' }}>{rx.date}</td>
-                <td><span className="badge badge-blue">{rx.status === 'Active' ? 'Activa' : rx.status === 'Completed' ? 'Completada' : rx.status}</span></td>
-                <td>
-                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                <td data-label="ID Receta"><span style={{ fontWeight: 600, color: 'var(--text-muted)' }}>{rx.rxId}</span></td>
+                <td data-label="Médico"><b style={{ color: 'var(--heading)' }}>Dr. Sameer Khan</b></td>
+                <td data-label="Fecha" style={{ color: 'var(--text-main)' }}>{rx.date}</td>
+                <td data-label="Estado"><span className="badge badge-blue">{rx.status === 'Active' ? 'Activa' : rx.status === 'Completed' ? 'Completada' : rx.status}</span></td>
+                <td data-label="Acciones">
+                  <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
                     <button className="action-btn" onClick={() => handleViewRx(rx)} title="Ver Receta" style={{ backgroundColor: 'var(--bg-sidebar)' }}><Eye size={18} color="var(--primary)" /></button>
                     <button className="action-btn" title="Descargar PDF" style={{ backgroundColor: 'var(--bg-sidebar)' }}><Download size={18} color="var(--accent)" /></button>
                   </div>
@@ -70,7 +70,7 @@ const Prescriptions = () => {
               </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <div className="grid-responsive">
               <div>
                 <label style={labelStyle}>Diagnóstico</label>
                 <div style={{ padding: '0.75rem', border: '1px solid var(--border)', borderRadius: '10px', fontSize: '0.9rem', fontWeight: 600, color: 'var(--heading)' }}>Hipertensión Leve y Ansiedad</div>

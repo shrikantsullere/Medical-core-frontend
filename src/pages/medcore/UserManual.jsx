@@ -24,12 +24,12 @@ const UserManual = () => {
       checkPageBreak(15);
       doc.setFontSize(18);
       doc.setFont('helvetica', 'bold');
-      doc.setTextColor(11, 59, 60);
+      doc.setTextColor(13, 148, 136);
       doc.text(text, margin, cursorY);
       cursorY += 12;
     };
 
-    const addSectionHeader = (text, color = [242, 140, 40]) => {
+    const addSectionHeader = (text, color = [13, 148, 136]) => {
       checkPageBreak(12);
       doc.setFontSize(14);
       doc.setFont('helvetica', 'bold');
@@ -61,11 +61,9 @@ const UserManual = () => {
     };
 
     // --- PDF CONSTRUCTION ---
-
-    // Title Page
     addTitle('DMU-MANUAL DE REFERENCIA DE USUARIO');
     addSectionHeader('GENERAL', [0, 0, 0]);
-    addBodyText('Implementación MedicalCore');
+    addBodyText('Implementación MedCare EMR');
     addBodyText('AUTOR: Cruz Guzman');
     addBodyText('FECHA CREACIÓN: 13-ene-15');
     addBodyText('FECHA ÚLTIMA ACTUALIZACIÓN: 13-ene-15');
@@ -90,9 +88,8 @@ const UserManual = () => {
     addBodyText('3. Version Control Repository: C:\\IT_CONSULTING\\Pan_AmericanLife\\...');
     cursorY += 10;
 
-    // Introduction
-    addSectionHeader('Medical Core', [11, 59, 60]);
-    addBodyText('Este capítulo trata del proceso que debe seguir el Usuario de MedicalCore para poder crear nuevos pacientes, citas, y facturar según sus requerimientos. Se explicará con un ejemplo el flujo de MedicalCore, los botones más usados y la utilidad de cada campo.');
+    addSectionHeader('MedCare EMR', [13, 148, 136]);
+    addBodyText('Este capítulo trata del proceso que debe seguir el Usuario de MedCare EMR para poder crear nuevos pacientes, citas, y facturar según sus requerimientos. Se explicará con un ejemplo el flujo de MedCare EMR, los botones más usados y la utilidad de cada campo.');
     cursorY += 5;
 
     addSectionHeader('Condiciones Generales de la Aplicación');
@@ -106,7 +103,6 @@ const UserManual = () => {
     addBodyText('Nombre, Apellido, Email, Password, Confirm, Especialidad.');
     cursorY += 10;
 
-    // Navigation & Tools
     addSectionHeader('Navegación y Herramientas');
     addBodyText('1. Barra de título: Presenta el nombre de la Aplicación.');
     addBodyText('2. Barra de Navegación: Tareas principales.');
@@ -118,9 +114,9 @@ const UserManual = () => {
     addBodyText('Refrescar Datos, Crear Cita, Guardar, Cancelar Cita, Agenda.');
     cursorY += 10;
 
-    // Modules
     addSectionHeader('Módulo de Operación');
     addBodyText('Sala de Espera: Coloca pacientes en espera.');
+    addBodyText('Historia Clínica: Guarda información clínica del paciente.');
     addBodyText('Historia Clínica: Guarda información clínica del paciente.');
     addBodyText('Validar: Verifica ARS y Cobertura.');
     addBodyText('Consultar: Formularios y cuestionarios.');
@@ -131,61 +127,68 @@ const UserManual = () => {
     addBodyText('Reportes: Detalles de facturas, cuadre por forma de pago.');
     addBodyText('Configuración: Registro de Doctores, Licencias, Especialidades, Centros Médicos y Coberturas.');
 
-    doc.save('Manual_Referencia_MedicalCore.pdf');
+    doc.save('Manual_Referencia_MedCareEMR.pdf');
   };
 
   useEffect(() => {
-    // Immediate download logic
     const timer = setTimeout(() => {
       generatePDF();
-    }, 1000);
+    }, 1200);
     return () => clearTimeout(timer);
   }, []);
 
   return (
     <DashboardLayout>
-      <div className="manual-download-page" style={{ padding: '3rem', textAlign: 'center', minHeight: '80vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)' }}>
+      <div className="manual-download-page" style={{ padding: '4rem 2rem', textAlign: 'center', minHeight: '85vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', animation: 'fadeIn 0.6s ease-out' }}>
 
-        <div className="loader-container" style={{ position: 'relative', marginBottom: '2.5rem' }}>
-          <div style={{ width: '120px', height: '120px', backgroundColor: '#e0f2fe', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <FileText size={60} color="#0284c7" />
-          </div>
-          <Loader2 size={130} color="#0284c7" className="spinning-ring" style={{ position: 'absolute', top: '-5px', left: '-5px', opacity: 0.3 }} />
-        </div>
-
-        <h1 style={{ fontSize: '2.5rem', color: '#0f172a', marginBottom: '1rem', fontWeight: '700' }}>Starting Download...</h1>
-        <p style={{ color: '#64748b', fontSize: '1.2rem', maxWidth: '550px', lineHeight: '1.7', marginBottom: '3rem' }}>
-          The <strong>User Reference Manual for MedicalCore (v2.0)</strong> is being generated. Your download will begin in a moment.
-        </p>
-
-        <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', color: '#059669', background: '#ecfdf5', padding: '0.8rem 1.5rem', borderRadius: '50px', fontWeight: '600', fontSize: '0.95rem' }}>
-            <CheckCircle2 size={20} />
-            <span>PDF Ready</span>
+        <div className="card" style={{ maxWidth: '700px', width: '100%', padding: '4rem', display: 'flex', flexDirection: 'column', alignItems: 'center', border: '1px solid #E2E8F0', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.05)', borderRadius: '32px', backgroundColor: 'white' }}>
+          <div className="loader-container" style={{ position: 'relative', marginBottom: '3rem' }}>
+            <div style={{ width: '140px', height: '140px', backgroundColor: '#F0FDFA', borderRadius: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', transform: 'rotate(-5deg)', border: '1px solid #CCFBF1', boxShadow: '0 10px 15px -3px rgba(13, 148, 136, 0.1)' }}>
+              <FileText size={72} color="#0D9488" />
+            </div>
+            <div className="spinning-ring" style={{ position: 'absolute', top: '-15px', left: '-15px', width: '170px', height: '170px', border: '3px solid transparent', borderTopColor: '#0D9488', borderBottomColor: '#0D9488', borderRadius: '50%', opacity: 0.2 }}></div>
           </div>
 
-          <button
-            onClick={generatePDF}
-            style={{ backgroundColor: '#F28C28', color: 'white', border: 'none', padding: '1rem 2rem', borderRadius: '50px', fontWeight: '700', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.8rem', boxShadow: '0 4px 12px rgba(242, 140, 40, 0.3)', transition: 'transform 0.2s' }}
-            onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'}
-            onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
-          >
-            <Download size={20} /> DOWNLOAD AGAIN
-          </button>
-        </div>
+          <h1 style={{ fontSize: '2.8rem', color: '#1E293B', marginBottom: '1.25rem', fontWeight: '900', letterSpacing: '-0.025em' }}>Accessing <span style={{ color: '#0D9488' }}>Repository</span></h1>
+          <p style={{ color: '#64748B', fontSize: '1.15rem', maxWidth: '500px', lineHeight: '1.8', marginBottom: '3.5rem', fontWeight: '500' }}>
+            The <span style={{ color: '#1E293B', fontWeight: '800' }}>MedCare Intelligence Protocol (v2.0)</span> is being synthesized for extraction. Your download will initiate momentarily.
+          </p>
 
-        <div style={{ marginTop: '4rem', padding: '1.5rem', borderTop: '1px solid #e2e8f0', color: '#94a3b8', fontSize: '0.85rem' }}>
-          Document Reference: USA-305-016-0400_SaludCore_Implementation
+          <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: '#0D9488', background: '#F0FDFA', padding: '1rem 2rem', borderRadius: '16px', fontWeight: '800', fontSize: '0.9rem', border: '1px solid #CCFBF1', letterSpacing: '0.05em' }}>
+              <CheckCircle2 size={24} />
+              <span>VALIDATED SCHEMA READY</span>
+            </div>
+
+            <button
+              onClick={generatePDF}
+              className="btn-primary hover-scale"
+              style={{ height: '60px', padding: '0 2.5rem', fontWeight: '900', display: 'flex', alignItems: 'center', gap: '1rem', fontSize: '1rem', letterSpacing: '0.025em' }}
+            >
+              <Download size={22} /> EXTRACT PROTOCOL
+            </button>
+          </div>
+
+          <div style={{ marginTop: '4rem', padding: '2rem', borderTop: '1.5px solid #F1F5F9', width: '100%', color: '#94A3B8', fontSize: '0.8rem', fontWeight: '700', letterSpacing: '0.1em', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span>USA-305-016-0400</span>
+            <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#E2E8F0' }}></div>
+            <span>INTEL-EMR-CORE</span>
+            <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#E2E8F0' }}></div>
+            <span>MASTER ARCHIVE</span>
+          </div>
         </div>
       </div>
 
       <style>{`
-        .spinning-ring {
-          animation: spin 3s linear infinite;
-        }
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
+        .spinning-ring { animation: spin 4s linear infinite; }
+        .hover-scale { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .hover-scale:hover { transform: translateY(-4px); box-shadow: 0 12px 20px -5px rgba(13, 148, 136, 0.4); }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        @media (max-width: 768px) {
+          .manual-grid { grid-template-columns: 1fr !important; }
+          .page-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
         }
       `}</style>
     </DashboardLayout>

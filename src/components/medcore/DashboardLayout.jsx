@@ -1,10 +1,65 @@
 import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { Menu, Lock, ArrowRight, LogOut } from 'lucide-react';
+import { Menu, Lock, ArrowRight, LogOut, Sun, CloudSun, TrendingUp, Moon, Settings, User, Globe, ChevronDown } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import './Dashboard.css';
 
 const Sidebar = ({ isOpen, toggleSidebar }) => {
+  const menuItems = [
+    { label: 'Autorizaciones', path: '/authorizations' },
+    { label: 'Doctores', path: '/doctors' },
+    { label: 'Empleados', path: '/employees' },
+    { label: 'Roles', path: '/roles' },
+    { label: 'Reporte ARS', path: '/ars-report' },
+    { label: 'Configuración', path: '/configuration' },
+    { label: 'Sucursales', path: '/branches' },
+    { label: 'Cargar Excel', path: '/upload-excel' },
+    { label: 'Reporte de Autorizaciones', path: '/authorization-report' },
+    { label: 'Reporte de Uso', path: '/usage-report' },
+    { label: 'Tarifas', path: '/fee' },
+    { label: 'Preguntas', path: '/questions' },
+    { label: 'Manual de Usuario', path: '/user-manual' },
+    { label: 'Contáctenos', path: '/contact-us' },
+  ];
+
+  return (
+    <aside className={`sidebar-premium ${isOpen ? 'open' : ''}`}>
+      <div className="sidebar-logo-premium">
+        <div className="ef-logo-container">
+          <div className="ef-logo-icon-premium">
+            <div className="logo-pulse-small"></div>
+            <Lock size={18} color="white" />
+          </div>
+          <div className="brand-info" style={{ display: isOpen ? 'block' : 'none' }}>
+            <div className="ef-logo-text-premium">
+              eFactura<span>x</span>
+            </div>
+            <div className="ef-logo-tagline-premium">Medical Core Suite</div>
+          </div>
+        </div>
+      </div>
+
+      <nav className="sidebar-menu-premium">
+        {menuItems.map((item, index) => (
+          <NavLink
+            key={index}
+            to={item.path}
+            className={({ isActive }) => `menu-item-premium ${isActive ? 'active' : ''}`}
+            onClick={() => {
+              if (window.innerWidth <= 1024) toggleSidebar();
+            }}
+          >
+            <div className="menu-active-indicator"></div>
+            <span>{item.label}</span>
+          </NavLink>
+        ))}
+      </nav>
+    </aside >
+  );
+};
+
+const Header = ({ toggleSidebar }) => {
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const { logout } = useAuth();
   const navigate = useNavigate();
 
@@ -13,73 +68,105 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     navigate('/');
   };
 
-  const menuItems = [
-    { label: 'AUTHORIZATIONS', path: '/authorizations' },
-    { label: 'DOCTORS', path: '/doctors' },
-    { label: 'EMPLOYEES', path: '/employees' },
-    { label: 'ROLES', path: '/roles' },
-    { label: 'ARS REPORT', path: '/ars-report' },
-    { label: 'CONFIGURATION', path: '/configuration' },
-    { label: 'BRANCHES', path: '/branches' },
-    { label: 'UPLOAD VIA EXCEL', path: '/upload-excel' },
-    { label: 'AUTHORIZATION REPORT', path: '/authorization-report' },
-    { label: 'USAGE REPORT', path: '/usage-report' },
-    { label: 'FEE', path: '/fee' },
-    { label: 'QUESTIONS', path: '/questions' },
-    { label: 'USER MANUAL', path: '/user-manual' },
-    { label: 'CONTACT US', path: '/contact-us' },
-  ];
-
   return (
-    <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
-      <div className="sidebar-logo">
-        <h1>+MedicalCore</h1>
-      </div>
-
-      <div className="sidebar-profile">
-        <div className="profile-img"></div>
-        <div className="profile-info">
-          <h3>Lopez Medical Center</h3>
-          <h3 style={{ fontSize: '0.7rem' }}>and Associates</h3>
-        </div>
-      </div>
-
-      <nav className="sidebar-menu">
-        {menuItems.map((item, index) => (
-          <NavLink
-            key={index}
-            to={item.path}
-            className={({ isActive }) => `menu-item ${isActive ? 'active' : ''}`}
-            onClick={() => window.innerWidth < 768 && toggleSidebar()}
-          >
-            {item.label}
-          </NavLink>
-        ))}
-      </nav>
-
-      <div className="sidebar-footer">
-        <button onClick={handleLogout} className="logout-btn">
-          <LogOut size={16} />
-          LOGOUT
+    <header className="top-header-premium">
+      <div className="header-left">
+        <button className="hamburger-premium" onClick={toggleSidebar}>
+          <Menu size={24} />
         </button>
       </div>
-    </aside >
+
+      <div className="header-right">
+        {/* Language Switcher Removed */}
+
+        <div className="profile-section-wrapper">
+          <div className="profile-trigger" onClick={() => setIsProfileOpen(!isProfileOpen)}>
+            <div className="profile-text-group">
+              <span className="profile-name">eFacturaX Admin</span>
+              <span className="profile-role">Centro de Operaciones</span>
+            </div>
+            <div className="premium-avatar">
+              <div className="avatar-ring"></div>
+              <img src="https://ui-avatars.com/api/?name=Admin&background=0D9488&color=fff" alt="Avatar" />
+            </div>
+          </div>
+
+          {isProfileOpen && (
+            <>
+              <div className="dropdown-overlay" onClick={() => setIsProfileOpen(false)}></div>
+              <div className="premium-dropdown profile-dropdown">
+                <div className="dropdown-header">
+                  <p className="user-email">admin@medcore.com</p>
+                </div>
+                <button className="dropdown-item">
+                  <User size={16} /> Ver Perfil
+                </button>
+                <button className="dropdown-item">
+                  <Settings size={16} /> Configuración
+                </button>
+                <div className="dropdown-separator"></div>
+                <button onClick={handleLogout} className="dropdown-item logout-item">
+                  <LogOut size={16} /> Cerrar Sesión
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    </header>
   );
 };
 
-const Header = ({ toggleSidebar }) => {
+const Footer = () => {
+  const [time, setTime] = useState(new Date());
+  const [exchangeRate, setExchangeRate] = useState(57.36);
+
+  React.useEffect(() => {
+    const timer = setInterval(() => {
+      setTime(new Date());
+      setExchangeRate(prev => {
+        const move = (Math.random() - 0.5) * 0.02;
+        return parseFloat((prev + move).toFixed(2));
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const formatTime = (date) => {
+    return date.toLocaleTimeString('es-ES', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    }).toUpperCase();
+  };
+
   return (
-    <header className="top-header">
-      <div className="hamburger" onClick={toggleSidebar}>
-        <Menu size={24} />
+    <footer className="status-bar-premium">
+      <div className="footer-group">
+        <div className="status-indicator">
+          <div className="status-dot pulse"></div>
+          <span>Conectado</span>
+        </div>
+        <div className="footer-divider"></div>
+        <div className="rate-info">
+          <img src="https://flagcdn.com/w20/do.png" alt="DR Flag" className="footer-flag" />
+          <span className="rate-label">Tasa de Cambio</span>
+          <span className="rate-value">{exchangeRate.toFixed(2)}</span>
+        </div>
       </div>
-      {/* Other header elements like user profile or notifications could go here */}
-      <div style={{ color: '#F28B27' }}>
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 2V22M2 12H22" stroke="currentColor" strokeWidth="4" />
-        </svg>
+
+      <div className="footer-group">
+        <div className="time-info">
+          <span className="current-time">{formatTime(time)}</span>
+        </div>
+        <div className="footer-divider"></div>
+        <div className="footer-icons">
+          <TrendingUp size={14} className="footer-icon" />
+          <CloudSun size={14} className="footer-icon" />
+          <Settings size={14} className="footer-icon" />
+        </div>
       </div>
-    </header>
+    </footer>
   );
 };
 
@@ -89,34 +176,35 @@ const DashboardLayout = ({ children }) => {
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
   const closeSidebar = () => setIsSidebarOpen(false);
 
-  // Close sidebar on window resize to mobile
   React.useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth <= 1024) {
-        setIsSidebarOpen(false);
-      } else {
-        setIsSidebarOpen(true);
-      }
+      if (window.innerWidth <= 1024) setIsSidebarOpen(false);
+      else setIsSidebarOpen(true);
     };
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   return (
-    <div className="dashboard-container">
-      {/* Mobile Overlay */}
+    <div className="app-container-premium">
+
+
       {isSidebarOpen && window.innerWidth <= 1024 && (
-        <div className="sidebar-overlay" onClick={closeSidebar}></div>
+        <div className="sidebar-overlay-premium" onClick={closeSidebar}></div>
       )}
 
-      <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+      <div className="layout-content-premium">
+        <Sidebar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
-      <div className="main-content">
-        <Header toggleSidebar={toggleSidebar} />
-        <main className="workspace">
-          {children}
-        </main>
+        <div className="main-stage-premium">
+          <Header toggleSidebar={toggleSidebar} />
+          <main className="content-scroll-premium">
+            {children}
+          </main>
+        </div>
       </div>
+
+      <Footer />
     </div>
   );
 };

@@ -51,12 +51,12 @@ const Payments = () => {
           <tbody>
             {MOCK_PAYMENTS.map(pay => (
               <tr key={pay.id}>
-                <td><span style={{ fontWeight: 600, color: 'var(--primary)' }}>{pay.txId}</span></td>
-                <td><span style={{ color: 'var(--text-muted)' }}>{pay.invId}</span></td>
-                <td><b style={{ color: 'var(--heading)' }}>{pay.clinic}</b></td>
-                <td style={{ fontWeight: 700, color: 'var(--accent)' }}>{pay.amount}</td>
-                <td><span className="badge badge-blue">{pay.mode === 'Cash' ? 'Efectivo' : pay.mode === 'Card' ? 'Tarjeta' : pay.mode}</span></td>
-                <td style={{ color: 'var(--text-main)' }}>{pay.date}</td>
+                <td data-label="No. de Recibo"><span style={{ fontWeight: 600, color: 'var(--primary)' }}>{pay.txId}</span></td>
+                <td data-label="No. de Factura"><span style={{ color: 'var(--text-muted)' }}>{pay.invId}</span></td>
+                <td data-label="Paciente"><b style={{ color: 'var(--heading)' }}>{pay.clinic}</b></td>
+                <td data-label="Monto" style={{ fontWeight: 700, color: 'var(--accent)' }}>{pay.amount}</td>
+                <td data-label="Método de Pago"><span className="badge badge-blue">{pay.mode === 'Cash' ? 'Efectivo' : pay.mode === 'Card' ? 'Tarjeta' : pay.mode}</span></td>
+                <td data-label="Fecha" style={{ color: 'var(--text-main)' }}>{pay.date}</td>
               </tr>
             ))}
           </tbody>

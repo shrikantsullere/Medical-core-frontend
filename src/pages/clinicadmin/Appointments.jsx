@@ -46,7 +46,7 @@ const Appointments = () => {
         onAction={() => setIsDrawerOpen(true)}
       />
 
-      <div style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
+      <div className="flex-responsive-wrap" style={{ marginBottom: '1.5rem' }}>
         <div style={{ flex: 1, minWidth: '250px', position: 'relative' }}>
           <Search size={18} color="#94a3b8" style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)' }} />
           <input
@@ -60,7 +60,7 @@ const Appointments = () => {
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          style={{ padding: '0 1rem', borderRadius: '10px', border: '1px solid var(--border)', backgroundColor: 'var(--bg-sidebar)', color: 'var(--text-main)', outline: 'none' }}
+          style={{ padding: '0.75rem 1rem', borderRadius: '10px', border: '1px solid var(--border)', backgroundColor: 'var(--bg-sidebar)', color: 'var(--text-main)', outline: 'none' }}
         >
           <option value="All">Todos los Estados</option>
           <option value="Confirmed">Confirmada</option>
@@ -70,8 +70,8 @@ const Appointments = () => {
       </div>
 
       {/* Calendar Controls */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', backgroundColor: 'var(--bg-sidebar)', padding: '1rem', borderRadius: '16px', border: '1px solid var(--border)' }}>
-        <div style={{ display: 'flex', gap: '0.5rem' }}>
+      <div className="flex-responsive" style={{ marginBottom: '2rem', backgroundColor: 'var(--bg-sidebar)', padding: '1rem', borderRadius: '16px', border: '1px solid var(--border)' }}>
+        <div style={{ display: 'flex', gap: '0.5rem', width: '100%', overflowX: 'auto', paddingBottom: '4px' }}>
           {['Day', 'Week', 'Month'].map(mode => (
             <button
               key={mode}
@@ -82,7 +82,8 @@ const Appointments = () => {
                 fontWeight: 600,
                 fontSize: '0.9rem',
                 backgroundColor: viewMode === mode ? 'var(--primary)' : 'transparent',
-                color: viewMode === mode ? 'white' : 'var(--text-muted)'
+                color: viewMode === mode ? 'white' : 'var(--text-muted)',
+                whiteSpace: 'nowrap'
               }}
             >
               Vista {mode === 'Day' ? 'Diaria' : mode === 'Week' ? 'Semanal' : 'Mensual'}
@@ -90,7 +91,7 @@ const Appointments = () => {
           ))}
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', justifyContent: 'space-between', width: '100%' }}>
           <button className="action-btn" style={{ backgroundColor: 'var(--bg-sidebar)' }}><ChevronLeft size={20} /></button>
           <span style={{ fontWeight: 700, fontSize: '1.1rem', color: 'var(--heading)' }}>20 - 26 de Marzo 2024</span>
           <button className="action-btn" style={{ backgroundColor: 'var(--bg-sidebar)' }}><ChevronRight size={20} /></button>
@@ -149,7 +150,7 @@ const Appointments = () => {
               {MOCK_DOCTORS.map(d => <option key={d.id} value={d.name}>{d.name}</option>)}
             </select>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+          <div className="grid-responsive">
             <div>
               <label style={labelStyle}>Fecha de Cita *</label>
               <input type="date" style={inputStyle} required />

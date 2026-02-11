@@ -1,4 +1,42 @@
-@import "tailwindcss";
+:root {
+  /* MedCare EMR Professional Clinical Palette - Compact & Modern */
+  --primary: #0D9488;
+  --primary-hover: #0F766E;
+  --primary-light: #F0FDFA;
+  --primary-dark: #0B3B3C;
+  --secondary: #0891B2;
+  --secondary-hover: #0E7490;
+  --accent: #0D9488;
+
+  --bg-main: #F8FAFC;
+  --bg-sidebar: #0B3B3C;
+  --bg-card: #FFFFFF;
+
+  --text-main: #1F2937;
+  --text-secondary: #4B5563;
+  /* New secondary text color */
+  --text-muted: #6B7280;
+
+  --border: #E2E8F0;
+  /* Slightly lighter border */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  /* Premium radius */
+  --radius-lg: 12px;
+
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+
+  /* Compact Spacing Units */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+}
 
 * {
   margin: 0;
@@ -7,6 +45,470 @@
 }
 
 body {
-  background-color: #E9EBED;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+  /* Slightly smaller for density */
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Typography Hierarchy */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--text-main);
+  font-weight: 700;
+  /* Balanced bold */
+  letter-spacing: -0.02em;
+  /* Tighter for modern feel */
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: 1.5rem;
+  /* Reduced from 1.75 */
+}
+
+h2 {
+  font-size: 1.25rem;
+  /* Reduced from 1.5 */
+}
+
+h3 {
+  font-size: 1.1rem;
+  /* Reduced from 1.25 */
+}
+
+h4 {
+  font-size: 1rem;
+}
+
+h5 {
+  font-size: 0.9rem;
+}
+
+/* Component: Buttons - Compact & Modern */
+button,
+.btn {
+  font-family: inherit;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background-color: var(--primary);
+  color: white;
+  padding: 0 1rem;
+  height: 36px;
+  /* Compact height */
+  font-size: 0.85rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-secondary {
+  background-color: white;
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  padding: 0 1rem;
+  height: 36px;
+  font-size: 0.85rem;
+}
+
+.btn-secondary:hover {
+  background-color: var(--bg-main);
+  border-color: var(--text-muted);
+  color: var(--text-main);
+}
+
+.btn-lg {
+  height: 42px;
+  /* Reduced from 48 */
+  padding: 0 1.25rem;
+  font-size: 0.95rem;
+}
+
+/* Component: Inputs & Selects - Compact */
+input,
+select,
+textarea,
+.custom-input,
+.custom-select {
+  width: 100%;
+  padding: 0 0.75rem;
+  height: 36px;
+  /* Standardize height */
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background-color: white;
+  color: var(--text-main);
+  font-size: 0.85rem;
+  /* Refined font size */
+  transition: border-color 0.15s, box-shadow 0.15s;
+  outline: none;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+.custom-input:focus,
+.custom-select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+label,
+.filter-label {
+  display: block;
+  font-size: 0.75rem;
+  /* Smaller labels */
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+/* Component: Cards - Clean & Compact */
+.card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  /* Reduced padding */
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 1rem;
+}
+
+/* Efacturax Branding - Unchanged logic, just spacing tweaks if needed */
+.ef-logo-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.ef-logo-icon {
+  position: relative;
+  width: 40px;
+  height: 40px;
+}
+
+/* Slightly smaller logo */
+.ef-logo-box {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  border: 2px solid #0099FF;
+}
+
+.ef-logo-box.top-left {
+  top: 6px;
+  left: 3px;
+}
+
+.ef-logo-box.top-right {
+  top: 0px;
+  left: 20px;
+  background-color: #4ADE80;
+  border-color: #4ADE80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ef-logo-box.bottom-right {
+  top: 20px;
+  left: 16px;
+  background-color: #0099FF;
+  border-color: #0099FF;
+}
+
+.ef-logo-line {
+  position: absolute;
+  background-color: #0099FF;
+}
+
+.ef-logo-line.v {
+  width: 2px;
+  height: 10px;
+  left: 23px;
+  top: 11px;
+}
+
+.ef-logo-line.h {
+  height: 2px;
+  width: 10px;
+  left: 8px;
+  top: 12px;
+}
+
+.ef-logo-text {
   font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  line-height: 1;
+  font-size: 1.2rem;
+}
+
+.ef-text-blue {
+  color: #0099FF;
+}
+
+.ef-text-green {
+  color: #4ADE80;
+}
+
+.ef-logo-text.light {
+  color: white;
+}
+
+.ef-logo-motto {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 400;
+  margin-top: 2px;
+}
+
+/* Responsive Utilities */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+}
+
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  min-width: 600px;
+}
+
+th,
+td {
+  padding: 0.75rem 1rem;
+  /* Reduced padding */
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.95rem;
+}
+
+th {
+  background-color: var(--bg-main);
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  position: sticky;
+  top: 0;
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+.grid-responsive {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  /* Better auto-fit */
+  gap: 1.5rem;
+}
+
+.flex-responsive {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.flex-responsive-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+/* Visibility Utilities */
+.mobile-only {
+  display: none !important;
+}
+
+.desktop-only {
+  display: flex !important;
+}
+
+/* -----------------------------------------------------------
+   MOBILE RESPONSIVENESS (Max-width: 768px)
+----------------------------------------------------------- */
+@media (max-width: 768px) {
+
+  /* Global Layout Safety */
+  body,
+  html {
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100vw;
+  }
+
+  * {
+    max-width: 100%;
+  }
+
+  .mobile-only {
+    display: flex !important;
+  }
+
+  .desktop-only {
+    display: none !important;
+  }
+
+  .hide-laptop {
+    display: none !important;
+  }
+
+  /* Grid & Flex Resets */
+  .grid-responsive,
+  .grid-cols-4,
+  .flex-responsive {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1rem !important;
+  }
+
+  /* Typography Scaling */
+  h1 {
+    font-size: 1.5rem !important;
+  }
+
+  h2 {
+    font-size: 1.3rem !important;
+  }
+
+  h3 {
+    font-size: 1.15rem !important;
+  }
+
+  .page-title {
+    font-size: 1.5rem !important;
+  }
+
+  /* Mobile Table Card View - The "Card Chota" Effect */
+  table {
+    display: block;
+    width: 100%;
+    min-width: 0 !important;
+  }
+
+  thead {
+    display: none;
+  }
+
+  tbody {
+    display: block;
+    width: 100%;
+  }
+
+  tr {
+    display: block;
+    margin-bottom: 1rem;
+    background-color: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    box-shadow: var(--shadow-sm);
+  }
+
+  td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px dashed var(--border);
+    text-align: right;
+    font-size: 0.9rem;
+    width: 100%;
+  }
+
+  td:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  td:first-child {
+    padding-top: 0;
+  }
+
+  td::before {
+    content: attr(data-label);
+    float: left;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+    margin-right: 1rem;
+  }
+
+  .table-container {
+    border: none;
+    background: transparent;
+    padding: 0;
+    margin: 0;
+  }
+
+  /* Compact Card Mobile */
+  .card {
+    padding: 1rem !important;
+    margin-bottom: 1rem !important;
+    border-radius: var(--radius-md) !important;
+  }
+
+  /* Stack buttons */
+  .btn,
+  button {
+    width: 100%;
+    justify-content: center;
+    height: 44px !important;
+    /* Good touch target */
+  }
+}
+
+@media (max-width: 1024px) {
+  .hide-desktop-menu {
+    display: none !important;
+  }
+
+  .hide-on-laptop {
+    display: none !important;
+  }
+
+  .show-on-laptop {
+    display: flex !important;
+  }
+}
+
+@media (min-width: 1025px) {
+  .show-on-laptop {
+    display: none !important;
+  }
 }

@@ -5,7 +5,12 @@ import { Search, Plus, Download, Upload, RotateCcw, Check, ChevronLeft, ChevronR
 const Fee = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [doctorSearch, setDoctorSearch] = useState('');
-  const [fees, setFees] = useState([]);
+  const [fees, setFees] = useState([
+    { id: 1, doctor: 'Dr. Juan Perez', ars: 'Senasa', coverage: 'Plan Básico', price: 'RD$ 2,500.00', typeOfFee: 'Percentage', feeValue: '10%' },
+    { id: 2, doctor: 'Dra. Maria Garcia', ars: 'Humano', coverage: 'Plan Max', price: 'RD$ 3,200.00', typeOfFee: 'Fixed', feeValue: 'RD$ 500.00' },
+    { id: 3, doctor: 'Dr. Carlos Rodriguez', ars: 'Universal', coverage: 'Plan Platinum', price: 'RD$ 4,500.00', typeOfFee: 'Percentage', feeValue: '15%' },
+    { id: 4, doctor: 'Dra. Ana Martinez', ars: 'Palic', coverage: 'Plan Gold', price: 'RD$ 3,800.00', typeOfFee: 'Fixed', feeValue: 'RD$ 600.00' },
+  ]);
   const [isAdding, setIsAdding] = useState(false);
   const [newFee, setNewFee] = useState({
     doctor: '',
@@ -40,309 +45,217 @@ const Fee = () => {
 
   return (
     <DashboardLayout>
-      <div className="fee-container">
-        {/* Header Section */}
-        <div className="fee-header">
-          <h1 className="main-title">Fee</h1>
-          <div className="breadcrumb">
-            <LayoutGrid size={16} />
-            <span>Fee maintenance</span>
+      <div className="fee-maintenance-page" style={{ padding: '1.5rem 2rem', maxWidth: '1400px', margin: '0 auto' }}>
+        <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1.5rem' }}>
+          <div>
+            <h2 className="page-title" style={{ margin: 0, fontSize: '1.75rem', fontWeight: '800', color: 'var(--text-main)', letterSpacing: '-0.025em' }}>Fee <span style={{ color: 'var(--primary)' }}>Management</span></h2>
+            <p style={{ color: 'var(--text-muted)', margin: '0.25rem 0 0', fontSize: '0.9rem', fontWeight: '500' }}>Maintain professional fees and clinical pricing.</p>
           </div>
-          <div className="orange-divider"></div>
+          <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }} className="action-buttons">
+            <button className="btn-secondary" onClick={() => window.location.href = '/medcore/upload-excel'}>
+              <Upload size={18} /> CARRY DATA
+            </button>
+            <button className="btn-primary" onClick={handleAddRow}>
+              <Plus size={18} /> NEW FEE ENTRY
+            </button>
+          </div>
         </div>
 
-        {/* Action Card */}
-        <div className="fee-card">
-          <div className="top-action-bar">
-            <div className="search-group">
-              <div className="input-with-icon">
-                <label>Look for:</label>
-                <div className="search-input-wrapper">
-                  <input
-                    type="text"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-                  <Search size={18} className="search-icon-accent" />
-                </div>
-              </div>
-
-              <div className="input-with-icon">
-                <label>Doctor:</label>
-                <div className="search-input-wrapper">
-                  <input
-                    type="text"
-                    value={doctorSearch}
-                    onChange={(e) => setDoctorSearch(e.target.value)}
-                    placeholder="Select..."
-                  />
-                  <Search size={18} className="search-icon-accent" />
-                </div>
+        <div className="card" style={{ padding: '1.5rem', marginBottom: '2rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem', alignItems: 'flex-end' }}>
+            <div className="filter-group">
+              <label className="filter-label" style={{ marginBottom: '0.5rem', display: 'block' }}>SEARCH BY DOCTOR</label>
+              <div style={{ position: 'relative' }}>
+                <input type="text" className="custom-input" placeholder="Search medical staff..." value={doctorSearch} onChange={(e) => setDoctorSearch(e.target.value)} style={{ width: '100%', paddingLeft: '2.5rem' }} />
+                <Search size={18} style={{ position: 'absolute', left: '0.8rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
               </div>
             </div>
-
-            <div className="button-group">
-              <button className="btn-text-icon">
-                <Download size={18} color="#F28C28" />
-                <span>DOWNLOAD</span>
-              </button>
-              <button className="btn-text-icon" onClick={() => window.location.href = '/medcore/upload-excel'}>
-                <Upload size={18} color="#F28C28" />
-                <span>CARRY</span>
-              </button>
-              <button className="btn-add-orange" onClick={handleAddRow}>
-                <Plus size={18} />
-                <span>ADD</span>
-              </button>
+            <div className="filter-group">
+              <label className="filter-label" style={{ marginBottom: '0.5rem', display: 'block' }}>GENERAL KEYWORD</label>
+              <div style={{ position: 'relative' }}>
+                <input type="text" className="custom-input" placeholder="Filter by keyword..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} style={{ width: '100%', paddingLeft: '2.5rem' }} />
+                <Search size={18} style={{ position: 'absolute', left: '0.8rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+              </div>
             </div>
+            <button className="btn-secondary" style={{ width: '100%', justifyContent: 'center' }}>
+              <Download size={18} /> EXPORT TABLE
+            </button>
           </div>
+        </div>
 
-          <div className="table-wrapper">
-            <table className="fee-table">
+        <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
+          <div className="table-container" style={{ margin: 0, border: 'none' }}>
+            <table style={{ width: '100%' }}>
               <thead>
-                <tr>
-                  <th style={{ width: '15%' }}>Doctor</th>
-                  <th style={{ width: '15%' }}>ARS</th>
-                  <th style={{ width: '20%' }}>Coverage</th>
-                  <th style={{ width: '15%' }}>Price</th>
-                  <th style={{ width: '15%' }}>Type of Fee</th>
-                  <th style={{ width: '15%' }}>Fee Value</th>
-                  <th style={{ width: '80px' }}></th>
+                <tr style={{ backgroundColor: 'var(--bg-sidebar)', color: 'white' }}>
+                  <th style={{ padding: '1rem 1.5rem', color: 'white', fontWeight: '700' }}>DOCTOR</th>
+                  <th style={{ padding: '1rem 1.5rem', color: 'white', fontWeight: '700' }}>ARS ENTITY</th>
+                  <th style={{ padding: '1rem 1.5rem', color: 'white', fontWeight: '700' }}>COVERAGE</th>
+                  <th style={{ padding: '1rem 1.5rem', color: 'white', fontWeight: '700' }}>BASE PRICE</th>
+                  <th style={{ padding: '1rem 1.5rem', color: 'white', fontWeight: '700' }}>FEE TYPE</th>
+                  <th style={{ padding: '1rem 1.5rem', color: 'white', fontWeight: '700' }}>FEE VALUE</th>
+                  <th style={{ padding: '1rem 1.5rem', color: 'white', fontWeight: '700', textAlign: 'right' }}>ACTIONS</th>
                 </tr>
               </thead>
               <tbody>
                 {isAdding && (
-                  <tr className="edit-row">
-                    <td>
-                      <input type="text" name="doctor" className="table-input" value={newFee.doctor} onChange={handleInputChange} />
-                    </td>
-                    <td>
-                      <input type="text" name="ars" className="table-input" value={newFee.ars} onChange={handleInputChange} />
-                    </td>
-                    <td>
-                      <input type="text" name="coverage" className="table-input" value={newFee.coverage} onChange={handleInputChange} />
-                    </td>
-                    <td>
-                      <input type="text" name="price" className="table-input" value={newFee.price} onChange={handleInputChange} />
-                    </td>
-                    <td>
-                      <select name="typeOfFee" className="table-select-plain" value={newFee.typeOfFee} onChange={handleInputChange}>
+                  <tr style={{ backgroundColor: 'var(--primary-light)', animation: 'fadeIn 0.3s ease-out' }}>
+                    <td style={{ padding: '0.75rem 1.5rem' }} data-label="DOCTOR"><input type="text" name="doctor" value={newFee.doctor} onChange={handleInputChange} className="custom-input" style={{ width: '100%', height: '36px' }} placeholder="Dr. Name" /></td>
+                    <td style={{ padding: '0.75rem 1.5rem' }} data-label="ARS ENTITY"><input type="text" name="ars" value={newFee.ars} onChange={handleInputChange} className="custom-input" style={{ width: '100%', height: '36px' }} placeholder="ARS" /></td>
+                    <td style={{ padding: '0.75rem 1.5rem' }} data-label="COVERAGE"><input type="text" name="coverage" value={newFee.coverage} onChange={handleInputChange} className="custom-input" style={{ width: '100%', height: '36px' }} placeholder="Plan" /></td>
+                    <td style={{ padding: '0.75rem 1.5rem' }} data-label="BASE PRICE"><input type="text" name="price" value={newFee.price} onChange={handleInputChange} className="custom-input" style={{ width: '100%', height: '36px' }} placeholder="Price" /></td>
+                    <td style={{ padding: '0.75rem 1.5rem' }} data-label="FEE TYPE">
+                      <select name="typeOfFee" value={newFee.typeOfFee} onChange={handleInputChange} className="custom-select" style={{ width: '100%', height: '36px' }}>
                         <option value="">Select...</option>
                         <option value="Fixed">Fixed</option>
                         <option value="Percentage">Percentage</option>
                       </select>
                     </td>
-                    <td>
-                      <input type="text" name="feeValue" className="table-input" value={newFee.feeValue} onChange={handleInputChange} />
-                    </td>
-                    <td>
-                      <div className="row-actions">
-                        <button className="btn-action-reset" onClick={handleReset}><RotateCcw size={14} /></button>
-                        <button className="btn-action-check" onClick={handleSave}><Check size={14} /></button>
+                    <td style={{ padding: '0.75rem 1.5rem' }} data-label="FEE VALUE"><input type="text" name="feeValue" value={newFee.feeValue} onChange={handleInputChange} className="custom-input" style={{ width: '100%', height: '36px' }} placeholder="Value" /></td>
+                    <td style={{ padding: '0.75rem 1.5rem', textAlign: 'right' }} data-label="ACTIONS">
+                      <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end', width: '100%' }}>
+                        <button onClick={handleReset} style={{ backgroundColor: '#EF4444', color: 'white', border: 'none', padding: '0.4rem', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Check size={16} style={{ transform: 'rotate(45deg)' }} /></button>
+                        <button onClick={handleSave} style={{ backgroundColor: 'var(--primary)', color: 'white', border: 'none', padding: '0.4rem', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Check size={16} /></button>
                       </div>
                     </td>
                   </tr>
                 )}
 
-                {fees.length === 0 && !isAdding && (
-                  <tr>
-                    <td colSpan="7" className="empty-msg">There are no fees available for this doctor</td>
-                  </tr>
-                )}
-
-                {fees.map(fee => (
-                  <tr key={fee.id}>
-                    <td>{fee.doctor}</td>
-                    <td>{fee.ars}</td>
-                    <td>{fee.coverage}</td>
-                    <td>{fee.price}</td>
-                    <td>{fee.typeOfFee}</td>
-                    <td>{fee.feeValue}</td>
-                    <td></td>
+                {fees.filter(fee => fee.doctor.toLowerCase().includes(doctorSearch.toLowerCase())).map((fee, idx) => (
+                  <tr key={fee.id} style={{ borderBottom: '1px solid var(--border)', backgroundColor: idx % 2 === 0 ? 'white' : 'var(--bg-main)' }}>
+                    <td style={{ padding: '1rem 1.5rem', fontWeight: '600', color: 'var(--text-main)' }} data-label="DOCTOR">{fee.doctor}</td>
+                    <td style={{ padding: '1rem 1.5rem', color: 'var(--text-secondary)', fontSize: '0.9rem' }} data-label="ARS ENTITY">{fee.ars}</td>
+                    <td style={{ padding: '1rem 1.5rem', color: 'var(--text-secondary)', fontSize: '0.9rem' }} data-label="COVERAGE">{fee.coverage}</td>
+                    <td style={{ padding: '1rem 1.5rem', color: 'var(--text-main)', fontWeight: '700' }} data-label="BASE PRICE">{fee.price}</td>
+                    <td style={{ padding: '1rem 1.5rem' }} data-label="FEE TYPE">
+                      <span style={{ backgroundColor: 'white', color: 'var(--text-secondary)', padding: '0.25rem 0.75rem', borderRadius: '100px', fontSize: '0.75rem', fontWeight: '700', border: '1px solid var(--border)' }}>
+                        {fee.typeOfFee.toUpperCase()}
+                      </span>
+                    </td>
+                    <td style={{ padding: '1rem 1.5rem', color: 'var(--primary)', fontWeight: '700' }} data-label="FEE VALUE">{fee.feeValue}</td>
+                    <td style={{ padding: '1rem 1.5rem', textAlign: 'right' }} data-label="ACTIONS">
+                      <button style={{ border: 'none', background: 'none', color: 'var(--primary)', cursor: 'pointer', opacity: 0.8, padding: '0.25rem' }} className="hover-scale"><Plus size={18} /></button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
+        </div>
 
-          <div className="pagination-group">
-            <div className="pagination-box">
-              <ChevronLeft size={16} className="pag-icon" />
-              <span>1/0</span>
-              <ChevronRight size={16} className="pag-icon" />
-            </div>
+        <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '0.5rem 1.5rem', backgroundColor: 'white', border: '1px solid var(--border)', borderRadius: '100px', boxShadow: 'var(--shadow-sm)' }}>
+            <button style={{ border: 'none', background: 'none', color: 'var(--primary)', cursor: 'pointer', display: 'flex', alignItems: 'center' }}><ChevronLeft size={18} /></button>
+            <span style={{ fontWeight: '700', color: 'var(--text-main)', fontSize: '0.85rem' }}>PAGE 1 OF 1</span>
+            <button style={{ border: 'none', background: 'none', color: 'var(--primary)', cursor: 'pointer', display: 'flex', alignItems: 'center' }}><ChevronRight size={18} /></button>
           </div>
         </div>
       </div>
 
       <style>{`
-        .fee-container {
-          padding: 1rem 2rem;
+        .hover-scale:hover { transform: scale(1.1); opacity: 1 !important; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        
+        @media (max-width: 768px) {
+          .fee-maintenance-page { 
+            padding: 1rem !important; 
+            width: 100% !important;
+            box-sizing: border-box !important;
+          }
+          
+          .page-header { 
+            flex-direction: column !important; 
+            align-items: flex-start !important; 
+            gap: 1.5rem !important; 
+            margin-bottom: 1.5rem !important;
+          }
+          
+          .action-buttons { 
+            width: 100% !important; 
+            flex-direction: column !important; 
+            gap: 1rem !important;
+          }
+          
+          .action-buttons button { 
+            width: 100% !important; 
+            justify-content: center !important; 
+          }
+
+          .filter-group {
+            width: 100% !important;
+          }
+
+          /* Force card content to stack */
+          .card > div {
+            grid-template-columns: 1fr !important;
+            gap: 1rem !important;
+          }
+          
+          /* Table Responsive Card View */
+          table, thead, tbody, th, td, tr { 
+            display: block !important; 
+          }
+          
+          thead tr { 
+            position: absolute !important;
+            top: -9999px !important;
+            left: -9999px !important;
+          }
+          
+          tr { 
+            margin-bottom: 1rem !important; 
+            border: 1px solid var(--border) !important;
+            border-radius: var(--radius-md) !important;
+            background-color: white !important;
+            padding: 1rem !important;
+            box-shadow: var(--shadow-sm) !important;
+          }
+          
+          td { 
+            border: none !important;
+            border-bottom: 1px dashed var(--border) !important; 
+            position: relative !important;
+            padding: 0.75rem 0 !important;
+            padding-left: 0 !important;
+            text-align: right !important;
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            width: 100% !important;
+          }
+
+          td:last-child {
+            border-bottom: none !important;
+            padding-bottom: 0 !important;
+            justify-content: flex-end !important;
+          }
+          
+          td:before { 
+            content: attr(data-label);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-align: left;
+            margin-right: 1rem;
+          }
+
+          /* Input fields in mobile table */
+          td input, td select {
+            text-align: right;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.9rem;
+            width: 60% !important; /* Limit width */
+          }
+          
+          /* Actions cell adjustments */
+          td[data-label="ACTIONS"] > div {
+             justify-content: flex-end !important;
+             width: auto !important;
+          }
         }
-        .fee-header {
-          margin-bottom: 2.5rem;
-        }
-        .main-title {
-          font-size: 2.2rem;
-          color: #333;
-          margin-bottom: 0.8rem;
-          font-weight: 500;
-        }
-        .breadcrumb {
-          display: flex;
-          align-items: center;
-          gap: 0.6rem;
-          color: #555;
-          font-size: 0.95rem;
-          margin-bottom: 1rem;
-        }
-        .orange-divider {
-          width: 100%;
-          height: 1px;
-          background-color: #F28C28;
-        }
-        .fee-card {
-          background-color: white;
-          border-radius: 4px;
-          padding: 2rem;
-          box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-          min-height: 400px;
-        }
-        .top-action-bar {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 2rem;
-          flex-wrap: wrap;
-          gap: 1.5rem;
-        }
-        .search-group {
-          display: flex;
-          align-items: center;
-          gap: 2rem;
-          flex-wrap: wrap;
-        }
-        .input-with-icon {
-          display: flex;
-          align-items: center;
-          gap: 0.8rem;
-        }
-        .input-with-icon label {
-          color: #666;
-          font-size: 1rem;
-          white-space: nowrap;
-        }
-        .search-input-wrapper {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-        }
-        .search-input-wrapper input {
-          border: 1px solid #C4C4C4;
-          outline: none;
-          padding: 0.5rem 0.8rem;
-          font-size: 0.95rem;
-          width: 150px;
-          border-radius: 4px;
-        }
-        .search-icon-accent {
-          color: #F28C28;
-          cursor: pointer;
-        }
-        .button-group {
-          display: flex;
-          align-items: center;
-          gap: 2rem;
-        }
-        .btn-text-icon {
-          background: none;
-          border: none;
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-          color: #444;
-          font-weight: 600;
-          font-size: 0.9rem;
-          cursor: pointer;
-          transition: opacity 0.2s;
-        }
-        .btn-text-icon:hover { opacity: 0.7; }
-        .btn-add-orange {
-          background-color: #F28C28;
-          color: white;
-          border: none;
-          padding: 0.7rem 1.5rem;
-          border-radius: 4px;
-          font-weight: 700;
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-          cursor: pointer;
-          text-transform: uppercase;
-        }
-        .table-wrapper {
-          margin-bottom: 2rem;
-          overflow-x: auto;
-        }
-        .fee-table {
-          width: 100%;
-          border-collapse: collapse;
-          min-width: 900px;
-        }
-        .fee-table th {
-          background-color: #0B3B3C;
-          color: white;
-          text-align: left;
-          padding: 1.2rem 1rem;
-          font-size: 0.95rem;
-          font-weight: 600;
-        }
-        .fee-table td {
-          padding: 1rem;
-          border-bottom: 1px solid #f1f1f1;
-          color: #333;
-          font-size: 0.95rem;
-        }
-        .empty-msg {
-          text-align: center;
-          padding: 3rem !important;
-          color: #333;
-          font-weight: 500;
-        }
-        .edit-row td { background-color: #fcfcfc; }
-        .table-input {
-          width: 100%;
-          padding: 0.5rem;
-          border: 1px solid #ddd;
-          border-radius: 4px;
-        }
-        .table-select-plain {
-          width: 100%;
-          padding: 0.5rem;
-          border: 1px solid #ddd;
-          border-radius: 4px;
-        }
-        .row-actions { display: flex; gap: 0.5rem; }
-        .btn-action-reset { background-color: #E5E7EB; border: none; padding: 0.4rem; border-radius: 4px; cursor: pointer; }
-        .btn-action-check { background-color: #F28C28; color: white; border: none; padding: 0.4rem; border-radius: 4px; cursor: pointer; }
-        .pagination-group {
-          display: flex;
-          justify-content: center;
-          margin-top: 1rem;
-        }
-        .pagination-box {
-          display: flex;
-          align-items: center;
-          gap: 2rem;
-          background-color: white;
-          padding: 0.6rem 1.5rem;
-          border: 1px solid #efefef;
-          box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-          border-radius: 8px;
-          color: #444;
-        }
-        .pag-icon { color: #F28C28; cursor: pointer; opacity: 0.8; }
-        .pag-icon:hover { opacity: 1; }
       `}</style>
     </DashboardLayout>
   );
